@@ -17,7 +17,7 @@ Get Target
     [return]    ${TARGET BASE}${/}${TEST NAME}
 
 *** Test Cases ***
-Test Deep Link All
+Test Deep Link *
     ${TARGET} =    Get Target
     Deep Link    *
 
@@ -28,7 +28,7 @@ Test Deep Link All
     ${item_count} =    Count Items In Directory    ${TARGET}
     Should Be Equal As Integers    4    ${item_count}
 
-Test Shallow Link All
+Test Shallow Link *
     ${TARGET} =    Get Target
     Shallow Link    *
 
