@@ -47,6 +47,8 @@ class LinkDotfiles:
 
     @keyword
     def set_ignore(self, *paths: str) -> None:
+        # Clear previous ignore value so it is not processed in _get_paths.
+        self._ignore = []
         self._ignore = self._get_paths(*paths)
 
     @keyword
@@ -60,7 +62,7 @@ class LinkDotfiles:
     ### Exposed Keyword Linking Methods ###
 
     @keyword
-    def shallow_link(self, *paths: Tuple[str]) -> None:
+    def shallow_link(self, *paths: str) -> None:
         """
         For each path in paths, creates a symlink immediately under the target with the same name as the file or
         directory the path specifies. Files are linked using absolute paths.
@@ -76,7 +78,7 @@ class LinkDotfiles:
             self._link(path, target_path)
 
     @keyword
-    def deep_link(self, *paths: Tuple[str]) -> None:
+    def deep_link(self, *paths: str) -> None:
         """
         For each path in paths, recursively searches for all files contained in each subdirectory, and creates a
         symlink in target contained in the file's subdirectories that points to each file.

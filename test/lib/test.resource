@@ -3,8 +3,8 @@ Library    OperatingSystem
 Library    Process
 
 *** Variables ***
-${TEST_BED}    ${/}test
-${TARGET} =    ${TEST_BED}${/}target
+${TEST BED}    ${/}test
+${TARGET BASE} =    ${TEST BED}${/}targets
 
 *** Keywords ***
 Command Should Succeed

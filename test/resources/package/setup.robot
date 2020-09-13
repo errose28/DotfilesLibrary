@@ -1,22 +1,24 @@
 *** Settings ***
 Resource    /test/lib/test.resource
 Resource    /test/lib/DeployDotfiles.resource
-Suite Setup    Suite Setup
-Test Teardown     Test Teardown
+Test Setup    Setup
 
 *** Keywords ***
-Suite Setup
+Setup
     Set Cwd    ${CURDIR}
     Set Ignore    ${SUITE SOURCE}
-    Set Target    ${TARGET}
+    ${target} =    Get Target
+    Log    Target is ${target}    console=True
+    Set Target    ${target}
 
-Test Teardown
-    # Log to Console    Tearing down
-    # Cannot empty the target, since that fails on symbolic link contents.
-    Remove Directory   ${TARGET}    recursive=True
+Get Target
+    # Generates a target directory for the current test.
+    # This allows results to be examined after the test without colliding with other tests.
+    [return]    ${TARGET BASE}${/}${TEST NAME}
 
 *** Test Cases ***
 Test Deep Link All
+    ${TARGET} =    Get Target
     Deep Link
 
     Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
@@ -27,6 +29,7 @@ Test Deep Link All
     Should Be Equal As Integers    4    ${item_count}
 
 Test Shallow Link All
+    ${TARGET} =    Get Target
     Shallow Link
 
     Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
