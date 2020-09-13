@@ -167,14 +167,9 @@ class LinkDotfiles:
         Absolute paths are treated literally, relative paths are resolved to the current working directory,
         so that all path objects returned are absolute.
         File globs include * and ** are expanded and their results are added (includes hidden files).
-        If paths is None or empty, it will be set to all top level files or directories in the current working
-        directory.
         """
 
         path_list = []
-
-        if not paths:
-            paths = ('*',)
 
         for path_str in paths:
             # Convert all paths to absolute.

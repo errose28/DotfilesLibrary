@@ -19,7 +19,7 @@ Get Target
 *** Test Cases ***
 Test Deep Link All
     ${TARGET} =    Get Target
-    Deep Link
+    Deep Link    *
 
     Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
     Link Should Exist    ${CURDIR}${/}.hidden_file    ${TARGET}${/}.hidden_file
@@ -30,7 +30,7 @@ Test Deep Link All
 
 Test Shallow Link All
     ${TARGET} =    Get Target
-    Shallow Link
+    Shallow Link    *
 
     Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
     Link Should Exist    ${CURDIR}${/}.hidden_file    ${TARGET}${/}.hidden_file
