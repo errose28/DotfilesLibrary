@@ -7,7 +7,7 @@ import shutil
 from enum import Enum
 from robot.api.deco import keyword, library
 
-@library(scope='TEST')
+@library(scope='SUITE')
 class LinkDotfiles:
     """
     Helper class to deploy dotfiles with symlinks using Robot Framework.

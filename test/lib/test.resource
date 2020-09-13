@@ -4,8 +4,6 @@ Library    Process
 
 *** Variables ***
 ${TEST_BED}    ${/}test
-# Home directory of docker container is default target.
-${TARGET}    ${/}root
 
 *** Keywords ***
 Command Should Succeed

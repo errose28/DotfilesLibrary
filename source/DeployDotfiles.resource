@@ -3,18 +3,13 @@ Library    OperatingSystem
 Library    LinkDotfiles.py
 
 *** Variables ***
-${SETUP} =    setup.robot
 # Modes: skip, repace, backup
-${MODE} =    skip
+# ${MODE} =    skip
 # Interactive not yet implemented.
 # ${INTERACTIVE} =    False
-${VERBOSE} =     False
+# ${VERBOSE} =     False
 
 *** Keywords ***
-Deep Link
-    Set Ignore    ${SETUP}
-    LinkDotfiles.Deep Link
-
 Run
     [Arguments]    @{command}
     # Only print output to console in verbose mode.
