@@ -121,18 +121,17 @@ class LinkDotfiles:
 
         should_link = True
 
-        if not self._is_ignored(src):
-            if dst.exists():
-                if self._mode == self.Mode.SKIP:
-                    should_link = False
-                elif self._mode == self.Mode.BACKUP:
-                    dst = self._backup(dst)
-                # Mode.REPLACE is the default symlink action.
+        if dst.exists():
+            if self._mode == self.Mode.SKIP:
+                should_link = False
+            elif self._mode == self.Mode.BACKUP:
+                dst = self._backup(dst)
+            # Mode.REPLACE is the default symlink action.
 
-            if should_link:
-                # Make intermediate directoreis for symlink.
-                os.makedirs(dst.parent, exist_ok=True)
-                os.symlink(src, dst)
+        if should_link:
+            # Make intermediate directoreis for symlink.
+            os.makedirs(dst.parent, exist_ok=True)
+            os.symlink(src, dst)
 
         return should_link
 
@@ -160,8 +159,7 @@ class LinkDotfiles:
 
         return is_ignored
 
-    @staticmethod
-    def _get_paths(*paths: Tuple[str]) -> List[Path]:
+    def _get_paths(self, *paths: Tuple[str]) -> List[Path]:
         """
         Converts paths to a list of pathlib.Path objects.
         Absolute paths are treated literally, relative paths are resolved to the current working directory,
@@ -179,9 +177,12 @@ class LinkDotfiles:
         for path_str in paths:
             # Convert all paths to absolute.
             path = Path(path_str).resolve()
-
             # Cannot glob absolute paths, so make them relative to root and then glob.
-            path_list += Path(path.anchor).glob(str(path.relative_to(path.anchor)))
+            unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
+
+            for try_path in unglobbed_paths:
+                if not self._is_ignored(try_path):
+                    path_list.append(try_path)
 
         return path_list
 

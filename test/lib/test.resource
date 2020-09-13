@@ -4,6 +4,7 @@ Library    Process
 
 *** Variables ***
 ${TEST_BED}    ${/}test
+${TARGET} =    ${TEST_BED}${/}target
 
 *** Keywords ***
 Command Should Succeed
@@ -13,8 +14,9 @@ Command Should Succeed
 
 Link Should Exist
     [Arguments]    ${dest}    ${link}
-    File Should Exist    ${dest}
-    File Should Exist    ${link}
+    # Link can be to a file or directory.
+    Should Exist    ${dest}
+    Should Exist    ${link}
     ${result} =    Run Process    readlink    ${link}
     Command Should Succeed    ${result}
     Should Be Equal    ${result.stdout}    ${dest}
