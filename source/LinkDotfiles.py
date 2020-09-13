@@ -43,7 +43,10 @@ class LinkDotfiles:
 
     @keyword
     def add_ignore(self, *paths: str) -> None:
-        self._ignore += self._get_paths(*paths)
+        # Clear previous ignore value so it is not processed in _get_paths.
+        old_ignore = self._ignore
+        self._ignore = []
+        self._ignore = old_ignore + self._get_paths(*paths)
 
     @keyword
     def set_ignore(self, *paths: str) -> None:
