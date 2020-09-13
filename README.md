@@ -28,16 +28,14 @@
         - Defaults to empty.
     - mode
         - How linking conflicts should be handled.
-        - skip, replace, backup
+        - skip, replace, backup, interactive
         - defaults to skip.
+        - In interactive, asks skip, backup, or replace for each conflict.
     - verbose
         - Print all actions to stdout, and log them to robot.
             - Need to figure out how to log to robot from within library.
         - Everything is logged anyways, only when verbose is on is that content alo printed.
         - Defaults to off.
-
-
-- Library is unit tested.
 
 ## Robot Library
 
@@ -87,11 +85,57 @@
 
 - Source is selected by passing the directory to robot, which will run all robot files within it.
 
-- Sources can override and extend each other by deploying one before the other.
+- Each package's setup.robot has tests: Install, Link, <anything else>
+    - TBD if order should matter here.
+
+### Options for Handling Mutliple Systems
+
+1. Sources can override and extend each other by deploying one before the other.
     - Example:
         - common has .vimrc, but no install command for vim.
         - arch and macos each have no .vimrc, but have install commands for vim only.
 
+2. Use tags to denote OS specific commands.
+    - Example:
+        - common has vim package, and install commands for all OSes.
+        - Each OS install is a test tagged with the operating system.
+
 ## Control Flow
 
 - Driver -> Robot -> Package (setup.robot) -> Robot Resources File -> Python Library
+
+## TODO
+
+### Blockers
+
+- Make all configs named params in library constructor.
+    - This allows setting them from a variables file, since .resource files cannot run the keyword setters in a setup section.
+    - DeployDotfiles.resource will pass these variables into the LinkDotfiles constructor.
+    - Ignore and cwd will be set from variables here, so they don't need to be done manually.
+        - Without driver, must pass ${SUITE SOURCE} to ctor to set the setup file name (ignore), and its parent dir (cwd).
+            - This is because the library section in robot cannot do logic, only pass vars.
+        - Wtih driver, the driver will have logic to split these things and set ignore and cwd separately.
+
+- Allow only relative paths as args to link methods.
+    - throw ValueError for absolute paths.
+    - Need a way to test this from robot, might not be possible.
+
+- Make and test getters for all setters.
+
+- Test link methods by explicitly specifying files or dirs.
+
+- Make install keywords idempotent, and test.
+
+- Test replace mode.
+
+### Non Blockers
+
+- Implement interactive mode.
+
+- Test modes other than replace.
+
+- Implement verbose in python library.
+
+- Test ignore semantics with files, directories, and globs.
+
+- Implement driver.
