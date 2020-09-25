@@ -1,13 +1,16 @@
 *** Settings ***
 Library    OperatingSystem
-Library    LinkDotfiles.py    ${SUITE SOURCE}
+# Variables can be set on robot invocation to configure.
+Library    LinkDotfiles.py    ${SUITE SOURCE}    target=${TARGET}    mode=${MODE}    ignore=${IGNORE}    verbose=${VERBOSE}
 
 *** Variables ***
+${TARGET} =    Get Environment Variable    HOME
 # Modes: skip, repace, backup
-# ${MODE} =    skip
+${MODE} =    skip
+${IGNORE} =    Create List
+${VERBOSE} =     False
 # Interactive not yet implemented.
 # ${INTERACTIVE} =    False
-# ${VERBOSE} =     False
 
 *** Keywords ***
 Run
