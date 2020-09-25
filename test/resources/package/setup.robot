@@ -27,6 +27,15 @@ Test Deep Link *
     ${item_count} =    Count Items In Directory    ${TARGET}
     Should Be Equal As Integers    4    ${item_count}
 
+Test Deep Link Some
+    ${TARGET} =    Get Target
+    Deep Link    file    dir
+
+    Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
+    Link Should Exist    ${CURDIR}${/}dir${/}dir_file    ${TARGET}${/}dir${/}dir_file
+    ${item_count} =    Count Items In Directory    ${TARGET}
+    Should Be Equal As Integers    2    ${item_count}
+
 Test Shallow Link *
     ${TARGET} =    Get Target
     Shallow Link    *
@@ -37,6 +46,15 @@ Test Shallow Link *
     Link Should Exist    ${CURDIR}${/}.hidden_dir    ${TARGET}${/}.hidden_dir
     ${item_count} =    Count Items In Directory    ${TARGET}
     Should Be Equal As Integers    4    ${item_count}
+
+Test Shallow Link Some
+    ${TARGET} =    Get Target
+    Shallow Link    file    dir
+
+    Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
+    Link Should Exist    ${CURDIR}${/}dir    ${TARGET}${/}dir
+    ${item_count} =    Count Items In Directory    ${TARGET}
+    Should Be Equal As Integers    2    ${item_count}
 
 Test Skip Mode Deep Link
     ${TARGET} =    Get Target
