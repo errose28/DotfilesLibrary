@@ -86,7 +86,8 @@ class LinkDotfiles:
     def shallow_link(self, *paths: str) -> None:
         """
         For each path in paths, creates a symlink immediately under the target with the same name as the file or
-        directory the path specifies. Files are linked using absolute paths.
+        directory the path specifies. Files are linked using absolute paths. Raises ValueError if paths are not
+        subidrectories of the current working directory.
 
         Example:
         target = '/target'
@@ -102,7 +103,8 @@ class LinkDotfiles:
     def deep_link(self, *paths: str) -> None:
         """
         For each path in paths, recursively searches for all files contained in each subdirectory, and creates a
-        symlink in target contained in the file's subdirectories that points to each file.
+        symlink in target contained in the file's subdirectories that points to each file. Raises ValueError if paths
+        are not subidrectories of the current working directory.
 
         Example:
         target = '/target'

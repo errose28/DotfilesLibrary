@@ -15,7 +15,7 @@
 
 - Support file globbing in path names.
 
-- Relative pats resolved based on current working dir.
+- Relative paths resolved based on current working dir.
     - This can be changed in Robot by robot util or driver.
 
 - Library takes the following configs as optional ctor params, which also have setters:
@@ -108,27 +108,19 @@
 
 ### Blockers
 
-- Make all configs named params in library constructor.
-    - This allows setting them from a variables file, since .resource files cannot run the keyword setters in a setup section.
-    - DeployDotfiles.resource will pass these variables into the LinkDotfiles constructor.
-    - Ignore and cwd will be set from variables here, so they don't need to be done manually.
-        - Without driver, must pass ${SUITE SOURCE} to ctor to set the setup file name (ignore), and its parent dir (cwd).
-            - This is because the library section in robot cannot do logic, only pass vars.
-        - Wtih driver, the driver will have logic to split these things and set ignore and cwd separately.
-
-- Allow only relative paths as args to link methods.
-    - throw ValueError for absolute paths.
-    - Need a way to test this from robot, might not be possible.
-
-- Make and test getters for all setters.
-
 - Test link methods by explicitly specifying files or dirs.
-
-- Make install keywords idempotent, and test.
+    - Current tests just use *
 
 - Test replace mode.
 
+- Test skip mode.
+
 ### Non Blockers
+
+- Link using relative paths.
+    - Will need to change tests to check for relative paths.
+
+- Make and test getters for all setters.
 
 - Implement interactive mode.
 

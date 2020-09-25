@@ -22,15 +22,21 @@ Run
 
 Enable Systemd Services
     [Arguments]    @{services}
-    Run    Systemctl    enable   --now   @{services}
+    FOR    ${service}    IN    @{services}
+        Run    systemctl    --quiet    is-enabled    ${service}    ||    systemctl    enable    --now    ${service}
+    END
 
 Arch Install
     [Arguments]    @{packages}
-    Run    sudo    yay    --repo    -Syu    @{packages}
+    FOR    ${package}    IN    @{packages}
+        Run    pacman    -Q    ${package}    ||    sudo    pacman    --noconfirm    -Syu    ${package}
+    END
 
 Aur Install
     [Arguments]    @{packages}
-    Run    sudo    yay    --aur    -Syu    @{packages}
+    FOR    ${package}    IN    @{packages}
+        Run    yay    -Q    ${package}    ||    yay    --noconfirm    --aur    -Syu    ${package}
+    END
 
 Brew Install
     [Arguments]    @{packages}
