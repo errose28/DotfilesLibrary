@@ -113,20 +113,16 @@ class LinkDotfiles:
         shallow_link('/foo/bar')
         Resulting link: /target/foo/bar -> /foo/bar
         """
-        try:
-            for path in self._get_paths(*paths):
-                if path.is_file():
-                    target_path = self._get_target(path)
-                    self._link(path, target_path)
-                else:
-                    for root, _, files in os.walk(str(path)):
-                        for file in files:
-                            src_file = Path(root, file)
-                            target_file = self._get_target(src_file)
-                            self._link(src_file, target_file)
-        except FileNotFoundError as e:
-            traceback.print_tb(e.__traceback__)
-            raise e
+        for path in self._get_paths(*paths):
+            if path.is_file():
+                target_path = self._get_target(path)
+                self._link(path, target_path)
+            else:
+                for root, _, files in os.walk(str(path)):
+                    for file in files:
+                        src_file = Path(root, file)
+                        target_file = self._get_target(src_file)
+                        self._link(src_file, target_file)
 
     ### Hidden Helper Methods ###
 
@@ -151,6 +147,7 @@ class LinkDotfiles:
         if dst.exists():
             if self._mode == self.Mode.SKIP:
                 should_link = False
+                self._print_verbose('Skipping file ' + str(src) + ' whose destination ' + str(dst) + ' already exists.')
             else:
                 if self._mode == self.Mode.BACKUP:
                     self._backup(dst)
@@ -161,6 +158,7 @@ class LinkDotfiles:
             # Make intermediate directories for symlink.
             os.makedirs(dst.parent, exist_ok=True)
             os.symlink(src, dst)
+            self._print_verbose('Created link ' + str(dst) + ' pointing to ' + os.readlink(dst))
 
         return should_link
 
@@ -201,17 +199,18 @@ class LinkDotfiles:
         for path_str in paths:
             # Convert all paths to absolute.
             path = Path(path_str).resolve()
-            # Cannot glob absolute paths, so make them relative to root and then glob.
+            # Cannot glob absolute paths, so make them relative to root, glob, then resolve back to the root.
             unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
 
             for try_path in unglobbed_paths:
-                if not self._is_ignored(try_path):
+                if self._is_ignored(try_path):
+                    self._print_verbose('Ignoring ' + str(try_path))
+                else:
                     path_list.append(try_path)
 
         return path_list
 
-    @staticmethod
-    def _backup(path: Path) -> str:
+    def _backup(self, path: Path) -> str:
         i = 0
         backup = path
         while backup.exists():
@@ -219,5 +218,10 @@ class LinkDotfiles:
             backup = backup.parent / (backup.name + '~' + str(i) + '~')
 
         shutil.copyfile(path, backup)
+        self._print_verbose('Backup of file ' + str(path) + ' created at ' + str(backup))
 
         return backup
+
+    def _print_verbose(self, msg: str) -> None:
+        if self._verbose:
+            print(msg, file=sys.stderr)

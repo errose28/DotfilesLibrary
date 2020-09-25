@@ -117,10 +117,17 @@
     - Will need to change tests to check for relative paths.
 
 - Make and test getters for all setters.
+    - Determine if python properties can be used with robot instead.
 
 - Implement interactive mode.
 
-- Implement verbose in python library.
+- Fully implement verbose.
+    - Use robot log in python library and robot file.
+    - Support different verbosity levels.
+    - Print initial configuration.
+
+- Add dry run option.
+    - Runs at some given verbosity level, but does no modifications.
 
 - Test ignore semantics with files, directories, and globs.
 
