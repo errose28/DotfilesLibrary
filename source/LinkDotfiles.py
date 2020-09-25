@@ -27,9 +27,9 @@ class LinkDotfiles:
         verbose=False):
 
         if target:
-            self._target = target
+            self._target = Path(target)
         else:
-            self._target = os.environ['HOME']
+            self._target = Path(os.environ['HOME'])
 
         # Resolve all relative paths to the director of the setup file.
         self.set_cwd(os.path.dirname(setup_file))

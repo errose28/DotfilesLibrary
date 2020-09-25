@@ -108,10 +108,15 @@
 
 ### Blockers
 
-- Test link methods by explicitly specifying files or dirs.
-    - Current tests just use *
+- Fix install commands since || is not allowed by robot.
 
 ### Non Blockers
+
+- Test helper keywords like `Run`
+
+- Test with defualt target.
+
+- Messages for failures in .resource file.
 
 - Link using relative paths.
     - Will need to change tests to check for relative paths.
@@ -132,3 +137,5 @@
 - Test ignore semantics with files, directories, and globs.
 
 - Implement driver.
+    - Define a config file location, which is actually a robot variable file that is loaded every time.
+    - Turn off all log and report output files (3 of them).

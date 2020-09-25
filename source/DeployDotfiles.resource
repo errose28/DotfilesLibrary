@@ -1,10 +1,11 @@
 *** Settings ***
 Library    OperatingSystem
+Library    Process
 # Variables can be set on robot invocation to configure.
 Library    LinkDotfiles.py    ${SUITE SOURCE}    target=${TARGET}    mode=${MODE}    ignore=${IGNORE}    verbose=${VERBOSE}
 
 *** Variables ***
-${TARGET} =    Get Environment Variable    HOME
+${TARGET} =    ${NONE}
 # Modes: skip, repace, backup
 ${MODE} =    skip
 ${IGNORE} =    Create List
@@ -15,8 +16,8 @@ ${VERBOSE} =     False
 *** Keywords ***
 Run
     [Arguments]    @{command}
-    # Only print output to console in verbose mode.
-    ${result} =    Run Process    @{command}    console=${VERBOSE}
+    # Could optionally specify to run in a shell if need be.
+    ${result} =    Run Process    @{command}
     Should Be Equal As Strings    ${result.rc}    0
     Should Be Empty    ${result.stderr}
 
@@ -45,3 +46,4 @@ Brew Install
 Brew Cask Install
     [Arguments]    @{packages}
     Run    brew    cask    install    @{packages}
+
