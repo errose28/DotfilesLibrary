@@ -111,10 +111,6 @@
 - Test link methods by explicitly specifying files or dirs.
     - Current tests just use *
 
-- Test replace mode.
-
-- Test skip mode.
-
 ### Non Blockers
 
 - Link using relative paths.
@@ -123,8 +119,6 @@
 - Make and test getters for all setters.
 
 - Implement interactive mode.
-
-- Test modes other than replace.
 
 - Implement verbose in python library.
 

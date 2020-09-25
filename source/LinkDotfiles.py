@@ -1,7 +1,7 @@
 import traceback
 import sys
 import os
-from typing import Tuple, List
+from typing import Tuple, List, Union
 from pathlib import Path
 import shutil
 from enum import Enum
@@ -41,7 +41,8 @@ class LinkDotfiles:
         if ignore:
             self._ignore += self._get_paths(ignore)
 
-        self._mode = mode
+        # Resolves mode as a string.
+        self.set_mode(mode)
         self._verbose = verbose
 
     ### Setters ###
@@ -73,8 +74,9 @@ class LinkDotfiles:
         self._ignore = self._get_paths(*paths)
 
     @keyword
-    def set_mode(self, mode: Mode) -> None:
-        self._mode = mode
+    def set_mode(self, mode: str) -> None:
+        # Sets mode based a string value using any case.
+        self._mode = self.Mode[mode.upper()]
 
     @keyword
     def set_verbose(self, verbose=True) -> None:
@@ -149,12 +151,14 @@ class LinkDotfiles:
         if dst.exists():
             if self._mode == self.Mode.SKIP:
                 should_link = False
-            elif self._mode == self.Mode.BACKUP:
-                dst = self._backup(dst)
-            # Mode.REPLACE is the default symlink action.
+            else:
+                if self._mode == self.Mode.BACKUP:
+                    self._backup(dst)
+
+                os.remove(dst)
 
         if should_link:
-            # Make intermediate directoreis for symlink.
+            # Make intermediate directories for symlink.
             os.makedirs(dst.parent, exist_ok=True)
             os.symlink(src, dst)
 
@@ -212,7 +216,7 @@ class LinkDotfiles:
         backup = path
         while backup.exists():
             i += 1
-            backup = backup.with_suffix('~' + i + '~')
+            backup = backup.parent / (backup.name + '~' + str(i) + '~')
 
         shutil.copyfile(path, backup)
 
