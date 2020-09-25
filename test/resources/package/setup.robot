@@ -5,8 +5,7 @@ Test Setup    Setup
 
 *** Keywords ***
 Setup
-    Set Cwd    ${CURDIR}
-    Set Ignore    ${SUITE SOURCE}
+    # Set a custom target for each test.
     ${target} =    Get Target
     Log    Target is ${target}    console=True
     Set Target    ${target}

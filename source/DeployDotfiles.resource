@@ -1,6 +1,6 @@
 *** Settings ***
 Library    OperatingSystem
-Library    LinkDotfiles.py
+Library    LinkDotfiles.py    ${SUITE SOURCE}
 
 *** Variables ***
 # Modes: skip, repace, backup

@@ -19,12 +19,30 @@ class LinkDotfiles:
         REPLACE = 'replace'
         BACKUP = 'backup'
 
-    def __init__(self):
-        # Default configuration values.
-        self._target = Path(os.environ['HOME'])
+    def __init__(self,
+        setup_file,
+        target=None,
+        ignore=None,
+        mode=Mode.SKIP,
+        verbose=False):
+
+        if target:
+            self._target = target
+        else:
+            self._target = os.environ['HOME']
+
+        # Resolve all relative paths to the director of the setup file.
+        self.set_cwd(os.path.dirname(setup_file))
+
+        # Init empty ignore list to be used to resolve the setup file path.
         self._ignore = []
-        self._mode = self.Mode.SKIP
-        self._verbose = False
+        # Do not link the setup file.
+        self._ignore = self._get_paths(setup_file)
+        if ignore:
+            self._ignore += self._get_paths(ignore)
+
+        self._mode = mode
+        self._verbose = verbose
 
     ### Setters ###
 
