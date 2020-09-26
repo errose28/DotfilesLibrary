@@ -108,17 +108,11 @@
 
 ### Blockers
 
-- Print stderr when command fails in Run keyword.
-
-- vscode extension installs fail
-
-- Keeps trying literal password value as command.
-
 ### Non Blockers
 
 - Test helper keywords like `Run`
 
-- Test with defualt target.
+- Test with default target.
 
 - Messages for failures in .resource file.
 
