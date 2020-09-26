@@ -66,6 +66,11 @@ Aur Install
         ...    Run Sudo    yay    --noconfirm    -S    ${package}
     END
 
+Pip Install
+    [Arguments]    @{packages}
+    # Pip will not reinstall packages already present.
+    Run    pip    install    @{packages}
+
 Brew Install
     [Arguments]    @{packages}
     Run    brew    install    @{packages}
