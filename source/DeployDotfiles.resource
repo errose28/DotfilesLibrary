@@ -26,8 +26,8 @@ Run Sudo
     [Arguments]    @{command}
 
     # Returns None if PASSWORD is not set.
-    ${PASSWORD} =    Get Variable Value    ${PASSWORD}
-    Run Keyword If    ${PASSWORD} is None
+    ${PASSWORD} =    Get Variable Value    \${PASSWORD}
+    Run Keyword If    ${PASSWORD} is ${NONE}
     ...    Set Password
 
    ${result} =    Run    printf    '%s\n'    ${PASSWORD}    |    sudo    -p    ''    -S    @{command}
@@ -38,7 +38,7 @@ Set Password
     Set Global Variable    ${PASSWORD}    ${password}
 
 Enable Systemd Services
-    [Arguments]    @{services}    now=True
+    [Arguments]    @{services}    ${now}=True
 
     FOR    ${service}    IN    @{services}
         ${result} =    Run Process    systemctl    --quiet    is-enabled    ${service}

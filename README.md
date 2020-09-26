@@ -108,7 +108,11 @@
 
 ### Blockers
 
-- Fix install commands since || is not allowed by robot.
+- Print stderr when command fails in Run keyword.
+
+- vscode extension installs fail
+
+- Keeps trying literal password value as command.
 
 ### Non Blockers
 
