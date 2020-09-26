@@ -38,12 +38,14 @@ Set Password
     Set Global Variable    ${PASSWORD}    ${password}
 
 Enable Systemd Services
-    [Arguments]    @{services}
+    [Arguments]    @{services}    now=True
 
     FOR    ${service}    IN    @{services}
         ${result} =    Run Process    systemctl    --quiet    is-enabled    ${service}
-        Run Keyword If    ${result.rc} != 0
+        Run Keyword If    ${result.rc} != 0 and ${now}
         ...    Run Sudo    systemctl    enable    --now    ${service}
+        Run Keyword If    ${result.rc} != 0 and not ${now}
+        ...    Run Sudo    systemctl    enable    ${service}
     END
 
 Arch Install
