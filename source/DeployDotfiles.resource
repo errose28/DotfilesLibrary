@@ -13,7 +13,6 @@ ${IGNORE} =    Create List
 ${VERBOSE} =     False
 # Interactive not yet implemented.
 # ${INTERACTIVE} =    False
-${PASSWORD} =    ${NONE}
 
 *** Keywords ***
 Run
@@ -25,12 +24,15 @@ Run
 
 Run Sudo
     [Arguments]    @{command}
+
+    # Returns None if PASSWORD is not set.
+    ${PASSWORD} =    Get Variable Value    ${PASSWORD}
     Run Keyword If    ${PASSWORD} is None
-    ...    Get Password
+    ...    Set Password
 
    ${result} =    Run    printf    '%s\n'    ${PASSWORD}    |    sudo    -p    ''    -S    @{command}
 
-Get Password
+Set Password
     ${password} =    Get Value From User    Enter Password For Sudo    hidden=True
     # Make sure user is only prompted for password once per run.
     Set Global Variable    ${PASSWORD}    ${password}
