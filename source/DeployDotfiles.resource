@@ -18,9 +18,10 @@ ${VERBOSE} =     False
 Run
     [Arguments]    @{command}
     ${result} =    Run Process    @{command}    shell=True
+    Log to Console    ${result.stdout}
+    Log to Console    ${result.stderr}
     Should Be Equal As Strings    ${result.rc}    0
     Should Be Empty    ${result.stderr}
-    Log to Console    ${result.stdout}
 
 Run Sudo
     [Arguments]    @{command}
