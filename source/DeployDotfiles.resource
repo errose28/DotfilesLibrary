@@ -15,28 +15,12 @@ ${VERBOSE} =     False
 # ${INTERACTIVE} =    False
 
 *** Keywords ***
-Run
+Run Interactively
     [Arguments]    @{command}
-    ${result} =    Run Process    @{command}    shell=True
-    Log to Console    ${result.stdout}
-    Log to Console    ${result.stderr}
-    Should Be Equal As Strings    ${result.rc}    0
-    Should Be Empty    ${result.stderr}
-
-Run Sudo
-    [Arguments]    @{command}
-
-    # Returns None if PASSWORD is not set.
-    ${PASSWORD} =    Get Variable Value    \${PASSWORD}
-    Run Keyword If    ${PASSWORD} is ${NONE}
-    ...    Set Password
-
-   ${result} =    Run    printf    '%s\n'    ${PASSWORD}    |    sudo    -p    ''    -S    @{command}
-
-Set Password
-    ${password} =    Get Value From User    Enter Password For Sudo    hidden=True
-    # Make sure user is only prompted for password once per run.
-    Set Global Variable    ${PASSWORD}    ${password}
+    # TODO: Return results from this method.
+    ${command str} =    Evaluate    ' '.join(@{command})
+    Log    ${command str}    console=True
+    Evaluate    subprocess.call(@{command})
 
 Enable Systemd Services
     [Arguments]    @{services}    ${now}=True
@@ -44,9 +28,9 @@ Enable Systemd Services
     FOR    ${service}    IN    @{services}
         ${result} =    Run Process    systemctl    --quiet    is-enabled    ${service}
         Run Keyword If    ${result.rc} != 0 and ${now}
-        ...    Run Sudo    systemctl    enable    --now    ${service}
+        ...    Run Interactively    systemctl    enable    --now    ${service}
         Run Keyword If    ${result.rc} != 0 and not ${now}
-        ...    Run Sudo    systemctl    enable    ${service}
+        ...    Run Interactively    systemctl    enable    ${service}
     END
 
 Arch Install
@@ -55,7 +39,7 @@ Arch Install
     FOR    ${package}    IN    @{packages}
         ${result} =    Run Process    pacman    -Q    ${package}
         Run Keyword If    ${result.rc} != 0
-        ...    Run Sudo    pacman    --noconfirm    -S    ${package}
+        ...    Run Interactively    sudo    pacman    --noconfirm    -S    ${package}
     END
 
 Aur Install
@@ -64,19 +48,19 @@ Aur Install
     FOR    ${package}    IN    @{packages}
         ${result} =    Run Process    yay    -Q    ${package}
         Run Keyword If    ${result.rc} != 0
-        ...    Run Sudo    yay    --noconfirm    -S    ${package}
+        ...    Run Interactively    yay    --noconfirm    -S    ${package}
     END
 
 Pip Install
     [Arguments]    @{packages}
     # Pip will not reinstall packages already present.
-    Run    pip    install    @{packages}
+    Run Interactively    pip    install    @{packages}
 
 Brew Install
     [Arguments]    @{packages}
-    Run    brew    install    @{packages}
+    Run Interactively    brew    install    @{packages}
 
 Brew Cask Install
     [Arguments]    @{packages}
-    Run    brew    cask    install    @{packages}
+    Run Interactively    brew    cask    install    @{packages}
 

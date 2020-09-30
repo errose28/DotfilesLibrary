@@ -108,7 +108,34 @@
 
 ### Blockers
 
+- Rename Arch Install to Pacman Install
+
+- Change from test tables to task tables.
+    - Syntax is same, just different terminology.
+
+- Make backup mode create a repo with the backup files.
+    - Remove replace mode.
+        - If you want the files gone, you can delete the backup directory.
+
+    - This allows any operations to be undone by:
+        1. Running with mode=backup or skip.
+        2. Running rerunning with mode=unlink 
+        3. Setting deploy-mode=copy from the backup.
+
+- Add unlink mode to python library/driver.
+    - Causes deep and shallow link to check whether the symlink they would have created exists.
+        - Verifies the source and destination.
+    - If it does, deletes the symlink.
+
+- Add deploy-mode flag to python library/driver.
+    - Default value is symlink.
+    - Can also specify hardlink or copy.
+
 ### Non Blockers
+
+- Return return code and stdin,out,err from Run Interactively.
+
+- Add Run helper method that is not interactive.
 
 - Test helper keywords like `Run`
 
@@ -131,6 +158,7 @@
 
 - Add dry run option.
     - Runs at some given verbosity level, but does no modifications.
+    - Need to differentiate from robot dry run.
 
 - Test ignore semantics with files, directories, and globs.
 
