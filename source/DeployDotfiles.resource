@@ -15,7 +15,7 @@ ${VERBOSE} =     False
 # ${INTERACTIVE} =    False
 
 *** Keywords ***
-Run Interactively
+Run
     [Arguments]    @{command}
     # TODO: Return results from this method.
     ${command str} =    Evaluate    ' '.join(@{command})
@@ -28,9 +28,9 @@ Enable Systemd Services
     FOR    ${service}    IN    @{services}
         ${result} =    Run Process    systemctl    --quiet    is-enabled    ${service}
         Run Keyword If    ${result.rc} != 0 and ${now}
-        ...    Run Interactively    systemctl    enable    --now    ${service}
+        ...    Run    systemctl    enable    --now    ${service}
         Run Keyword If    ${result.rc} != 0 and not ${now}
-        ...    Run Interactively    systemctl    enable    ${service}
+        ...    Run    systemctl    enable    ${service}
     END
 
 Arch Install
@@ -39,7 +39,7 @@ Arch Install
     FOR    ${package}    IN    @{packages}
         ${result} =    Run Process    pacman    -Q    ${package}
         Run Keyword If    ${result.rc} != 0
-        ...    Run Interactively    sudo    pacman    --noconfirm    -S    ${package}
+        ...    Run    sudo    pacman    --noconfirm    -S    ${package}
     END
 
 Aur Install
@@ -48,19 +48,19 @@ Aur Install
     FOR    ${package}    IN    @{packages}
         ${result} =    Run Process    yay    -Q    ${package}
         Run Keyword If    ${result.rc} != 0
-        ...    Run Interactively    yay    --noconfirm    -S    ${package}
+        ...    Run    yay    --noconfirm    -S    ${package}
     END
 
 Pip Install
     [Arguments]    @{packages}
     # Pip will not reinstall packages already present.
-    Run Interactively    pip    install    @{packages}
+    Run    pip    install    @{packages}
 
 Brew Install
     [Arguments]    @{packages}
-    Run Interactively    brew    install    @{packages}
+    Run    brew    install    @{packages}
 
 Brew Cask Install
     [Arguments]    @{packages}
-    Run Interactively    brew    cask    install    @{packages}
+    Run    brew    cask    install    @{packages}
 
