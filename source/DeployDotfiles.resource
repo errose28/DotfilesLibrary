@@ -7,17 +7,13 @@ Library    LinkDotfiles.py    ${SUITE SOURCE}    target=${TARGET}    mode=${MODE
 
 *** Variables ***
 ${TARGET} =    ${NONE}
-# Modes: skip, repace, backup
 ${MODE} =    skip
 ${IGNORE} =    Create List
 ${VERBOSE} =     False
-# Interactive not yet implemented.
-# ${INTERACTIVE} =    False
 
 *** Keywords ***
 Run
     [Arguments]    @{command}
-    # TODO: Return results from this method.
     ${command str} =    Evaluate    ' '.join(@{command})
     Log    ${command str}    console=True
     Evaluate    subprocess.call(@{command})
@@ -25,6 +21,7 @@ Run
 Enable Systemd Services
     [Arguments]    @{services}    ${now}=True
 
+    # Check if services are enabled first so user is not unnecessary prompted for password.
     FOR    ${service}    IN    @{services}
         ${result} =    Run Process    systemctl    --quiet    is-enabled    ${service}
         Run Keyword If    ${result.rc} != 0 and ${now}
@@ -36,6 +33,7 @@ Enable Systemd Services
 Arch Install
     [Arguments]    @{packages}
 
+    # Check if packages are installed first so user is not unnecessary prompted for password.
     FOR    ${package}    IN    @{packages}
         ${result} =    Run Process    pacman    -Q    ${package}
         Run Keyword If    ${result.rc} != 0
@@ -45,6 +43,7 @@ Arch Install
 Aur Install
     [Arguments]    @{packages}
 
+    # Check if packages are installed first so user is not unnecessary prompted for password.
     FOR    ${package}    IN    @{packages}
         ${result} =    Run Process    yay    -Q    ${package}
         Run Keyword If    ${result.rc} != 0
@@ -54,13 +53,16 @@ Aur Install
 Pip Install
     [Arguments]    @{packages}
     # Pip will not reinstall packages already present.
+    # Defaults to user level install.
     Run    pip    install    @{packages}
 
 Brew Install
     [Arguments]    @{packages}
+    # Homebrew will not reinstll packages already present.
     Run    brew    install    @{packages}
 
 Brew Cask Install
     [Arguments]    @{packages}
+    # Homebrew will not reinstll packages already present.
     Run    brew    cask    install    @{packages}
 

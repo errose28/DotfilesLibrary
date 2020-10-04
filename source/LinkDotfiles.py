@@ -1,7 +1,6 @@
-import traceback
 import sys
 import os
-from typing import Tuple, List, Union
+from typing import Tuple, List
 from pathlib import Path
 import shutil
 from enum import Enum
