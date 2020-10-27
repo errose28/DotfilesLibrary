@@ -1,13 +1,14 @@
-import sys
 import os
 from typing import Tuple, List
 from pathlib import Path
 import shutil
 from enum import Enum
 from robot.api.deco import keyword, library
+from  robot.api import logger
+from robot.libraries.BuiltIn import BuiltIn
 
 @library(scope='SUITE')
-class LinkDotfiles:
+class Link:
     """
     Helper class to deploy dotfiles with symlinks using Robot Framework.
     the class operates on strings passed in by Robot, but converts them to pathlib.Path objects to work with internally.
@@ -19,66 +20,81 @@ class LinkDotfiles:
         BACKUP = 'backup'
 
     def __init__(self,
-        setup_file,
+        cwd=None,
         target=None,
         ignore=None,
-        mode=Mode.SKIP,
-        verbose=False):
+        mode=None,
+        verbose=None):
 
-        if target:
-            self._target = Path(target)
-        else:
-            self._target = Path(os.environ['HOME'])
+        self._robot_file = self._value('SUITE SOURCE')
 
-        # Resolve all relative paths to the director of the setup file.
-        self.set_cwd(os.path.dirname(setup_file))
-
-        # Init empty ignore list to be used to resolve the setup file path.
-        self._ignore = []
-        # Do not link the setup file.
-        self._ignore = self._get_paths(setup_file)
-        if ignore:
-            self._ignore += self._get_paths(ignore)
-
-        # Resolves mode as a string.
+        self.set_cwd(cwd)
+        self.set_target(target)
+        self.set_ignore(ignore)
         self.set_mode(mode)
-        self._verbose = verbose
+        self.set_verbose(verbose)
+
+        # Do not link the setup file.
+        self.add_ignore(self._robot_file)
 
     ### Setters ###
 
     @keyword
-    def set_cwd(self, path: str) -> str:
+    def set_cwd(self, path: str) -> None:
         """
-        Changes the current working directory, and returns the previous one.
+        Changes the current working directory.
         """
-        current_dir = os.getcwd()
-        os.chdir(path)
-        return current_dir
+        if not path:
+            path = os.path.dirname(self._robot_file)
+
+        if path:
+            os.chdir(path)
+        # Else, keep current directory.
 
     @keyword
     def set_target(self, path: str) -> None:
+        if not path:
+            path = self._value('TARGET')
+            if not path:
+                path = os.environ['HOME']
+
         self._target = Path(path)
 
     @keyword
     def add_ignore(self, *paths: str) -> None:
-        # Clear previous ignore value so it is not processed in _get_paths.
-        old_ignore = self._ignore
-        self._ignore = []
-        self._ignore = old_ignore + self._get_paths(*paths)
+        if paths:
+            # Clear previous ignore value so it is not processed in _get_paths.
+            old_ignore = self._ignore
+            self._ignore = []
+            self._ignore = old_ignore + self._get_paths(*paths)
 
     @keyword
     def set_ignore(self, *paths: str) -> None:
         # Clear previous ignore value so it is not processed in _get_paths.
+        # Note that this will remove the robot file from the ignore list.
         self._ignore = []
-        self._ignore = self._get_paths(*paths)
+
+        # Only add paths if the argument is not None or empty, and the first element is not None.
+        if paths and paths[0]:
+            self._ignore = self._get_paths(*paths)
 
     @keyword
     def set_mode(self, mode: str) -> None:
         # Sets mode based a string value using any case.
+        if not mode:
+            mode = self._value('MODE')
+            if not mode:
+                mode = 'skip'
+
         self._mode = self.Mode[mode.upper()]
 
     @keyword
-    def set_verbose(self, verbose=True) -> None:
+    def set_verbose(self, verbose: bool) -> None:
+        if verbose is None:
+            verbose = self._value('VERBOSE')
+            if verbose is None:
+                verbose = False
+
         self._verbose = verbose
 
     ### Exposed Keyword Linking Methods ###
@@ -221,6 +237,11 @@ class LinkDotfiles:
 
         return backup
 
+    @staticmethod
+    def _value(name, default=None):
+        return BuiltIn().get_variable_value('${' + name + '}', default)
+
     def _print_verbose(self, msg: str) -> None:
+        # TODO: Determine whether to keep verbose flag or just use robot's log levels.
         if self._verbose:
-            print(msg, file=sys.stderr)
+            logger.info(msg, also_console=True)

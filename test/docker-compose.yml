@@ -5,8 +5,7 @@ services:
     volumes:
       # Robot Libraries:
       - ./lib/test.resource:/test/lib/test.resource:ro
-      - ../source/LinkDotfiles.py:/test/lib/LinkDotfiles.py:ro
-      - ../source/DeployDotfiles.resource:/test/lib/DeployDotfiles.resource:ro
+      - ../source/DotfilesLibrary:/test/lib/DotfilesLibrary:ro
       # Test Output:
       - ./results:/test/results
       # Test files:
