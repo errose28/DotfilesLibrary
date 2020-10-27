@@ -8,7 +8,7 @@
     - This is a configurable Robot Framework library implemented in Python.
 
 - `LinkDotfiles.py` is imported as a library in `DeployDotfiles.resource`, which also adds keywords for running commands interactively and installing from package managers.
-    - This resource file can be imported to robot files to automate setup tasks for new systems, including dotrfiles deployment and package installation.
+    - This resource file can be imported to robot files to automate setup tasks for new systems, including dotfiles deployment and package installation.
 
 ## Status
 

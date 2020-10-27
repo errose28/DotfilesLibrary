@@ -1,6 +1,6 @@
 *** Settings ***
 Resource    /test/lib/test.resource
-Resource    /test/lib/DeployDotfiles.resource
+Library    /test/lib/DotfilesLibrary
 Test Setup    Setup
 
 *** Keywords ***
