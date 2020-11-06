@@ -12,6 +12,7 @@ class DotfilesLibrary:
             Misc.enable_systemd_services,
             Install.pacman_install,
             Install.yay_install,
+            Install.pip_install,
             Install.brew_install,
             Install.brew_cask_install,
             self._link.set_cwd,

@@ -123,3 +123,10 @@ Test Backup Mode Deep Link
 Test Pacman Install
     Pacman Install    vim
     Program Should Be Installed    vim
+    # Clean slate for future tests.
+    Run    sudo    pacman    -Rs    --noconfirm    vim
+
+Test Skip Pacman Install
+    ${SKIP_INSTALL} =    Set Variable    ${TRUE}
+    Pacman Install    vim
+    Program Should Not Be Installed    vim

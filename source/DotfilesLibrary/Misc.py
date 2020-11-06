@@ -12,7 +12,7 @@ def run(*cmd: str, fail_on_rc=False) -> int:
     rc = subprocess.call(cmd)
 
     if fail_on_rc and rc != 0:
-        BuiltIn().fail(cmd_str + ' failed with exit code ' + rc)
+        BuiltIn().fail(cmd_str + ' failed with exit code ' + str(rc))
 
     return rc
 
@@ -22,6 +22,6 @@ def enable_systemd_services(*services: str, now=True):
 
     for service in services:
         # Check if services are enabled first so user is not unnecessary prompted for password.
-        is_enabled = (run(['systemctl', '--quiet', 'is-enabled', service]) == 0)
+        is_enabled = (run('systemctl', '--quiet', 'is-enabled', service) == 0)
         if not is_enabled:
-            run(['systemctl', 'enable', now_arg, 'is-enabled', service], fail_on_rc=True)
+            run('systemctl', 'enable', now_arg, 'is-enabled', service, fail_on_rc=True)
