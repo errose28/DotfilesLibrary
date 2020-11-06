@@ -7,8 +7,6 @@ from robot.api import logger
 def run(*cmd: str, fail_on_rc=False) -> int:
     cmd_str = ' '.join(cmd)
     logger.info(cmd_str)
-    import sys
-    print(cmd, file=sys.stderr)
 
     # TODO: Determine if this prints stderr and if we can log it.
     rc = subprocess.call(cmd)

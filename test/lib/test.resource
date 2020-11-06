@@ -20,3 +20,8 @@ Link Should Exist
     ${result} =    Run Process    readlink    ${link}
     Command Should Succeed    ${result}
     Should Be Equal    ${result.stdout}    ${dest}
+
+Program Should Be Installed
+    [Arguments]    ${program}
+    ${result} =    Run Process    command    -v    ${program}    shell=True
+    Command Should Succeed    ${result}

@@ -119,3 +119,7 @@ Test Backup Mode Deep Link
     ${item_count} =    Count Items In Directory    ${TARGET}
     # Extra backup file in top level directory was added.
     Should Be Equal As Integers    5    ${item_count}
+
+Test Pacman Install
+    Pacman Install    vim
+    Program Should Be Installed    vim
