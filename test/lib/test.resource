@@ -21,12 +21,3 @@ Link Should Exist
     Command Should Succeed    ${result}
     Should Be Equal    ${result.stdout}    ${dest}
 
-Program Should Be Installed
-    [Arguments]    ${program}
-    ${result} =    Run Process    command    -v    ${program}    shell=True
-    Command Should Succeed    ${result}
-
-Program Should Not Be Installed
-    [Arguments]    ${program}
-    ${result} =    Run Process    command    -v    ${program}    shell=True
-    Should Not Be Equal As Strings    ${result.rc}    0

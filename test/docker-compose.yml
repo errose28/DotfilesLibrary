@@ -1,6 +1,6 @@
 version: "3"
 services:
-  test_link:
+  test_service:
     image: robot-archlinux
     volumes:
       # Robot Libraries:
@@ -9,8 +9,8 @@ services:
       # Test Output:
       - ./results:/test/results
       # Test files:
-      - ./resources:/test/resources:ro
+      - ./robot:/test/robot:ro
     # The --outputdir flag does not appear to work,
     # so manually move to the location output files should be placed.
     working_dir: /test/results
-    command: robot --pythonpath /test/lib /test/resources
+    command: robot --pythonpath /test/lib /test/robot

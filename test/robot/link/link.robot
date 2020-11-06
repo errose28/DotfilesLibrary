@@ -120,13 +120,3 @@ Test Backup Mode Deep Link
     # Extra backup file in top level directory was added.
     Should Be Equal As Integers    5    ${item_count}
 
-Test Pacman Install
-    Pacman Install    vim
-    Program Should Be Installed    vim
-    # Clean slate for future tests.
-    Run    sudo    pacman    -Rs    --noconfirm    vim
-
-Test Skip Pacman Install
-    ${SKIP_INSTALL} =    Set Variable    ${TRUE}
-    Pacman Install    vim
-    Program Should Not Be Installed    vim

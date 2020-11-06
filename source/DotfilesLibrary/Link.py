@@ -58,7 +58,7 @@ class Link:
             if not path:
                 path = os.environ['HOME']
 
-        self._target = Path(path)
+        self._target = Path(path).expanduser().resolve()
 
     @keyword
     def add_ignore(self, *paths: str) -> None:
@@ -212,8 +212,8 @@ class Link:
         path_list = []
 
         for path_str in paths:
-            # Convert all paths to absolute.
-            path = Path(path_str).resolve()
+            # Convert all paths to absolute and convert ~ to user home.
+            path = Path(path_str).expanduser().resolve()
             # Cannot glob absolute paths, so make them relative to root, glob, then resolve back to the root.
             unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
 
