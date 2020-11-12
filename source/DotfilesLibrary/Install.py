@@ -2,7 +2,7 @@ from typing import List, Iterable
 from robot.api.deco import keyword
 from  robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
-from .Misc import run
+from .Misc import interactive
 
 @keyword
 def pacman_install(*packages: str, sudo=True):
@@ -35,9 +35,9 @@ def _install(install_cmd: Iterable[str], packages: Iterable[str], check_cmd: Ite
     else:
         for package in packages:
             if check_cmd:
-                is_installed = (run(*check_cmd, package) == 0)
+                is_installed = (interactive(*check_cmd, package) == 0)
             else:
                 is_installed = False
 
             if not is_installed:
-                run(*install_cmd, package, fail_on_rc=True)
+                interactive(*install_cmd, package, fail_on_rc=True)

@@ -8,7 +8,7 @@ class DotfilesLibrary:
 
         # TODO: Use reflection to get functions from all modules.
         self._keywords = [
-            Misc.run,
+            Misc.interactive,
             Misc.enable_systemd_services,
             Install.pacman_install,
             Install.yay_install,
@@ -31,15 +31,3 @@ class DotfilesLibrary:
     def get_keyword_names(self):
         return [keyword.__name__ for keyword in self._keywords]
 
-    # def run_keyword(self, name, args):
-    #     print(dir(self), file=sys.stderr)
-    #     # return run(*args)
-    #     return getattr(self, name)(*args)
-
-    # def __getattr__(self, name):
-    #     print('getattr', file=sys.stderr)
-    #     return self._misc.run
-        # if name == 'Run':
-        #     return run
-        # else:
-        #     raise AttributeError()

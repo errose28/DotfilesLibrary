@@ -4,7 +4,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
 
 @keyword
-def run(*cmd: str, fail_on_rc=False) -> int:
+def interactive(*cmd: str, fail_on_rc=False) -> int:
     cmd_str = ' '.join(cmd)
     logger.info(cmd_str)
 
@@ -22,6 +22,6 @@ def enable_systemd_services(*services: str, now=True):
 
     for service in services:
         # Check if services are enabled first so user is not unnecessary prompted for password.
-        is_enabled = (run('systemctl', '--quiet', 'is-enabled', service) == 0)
+        is_enabled = (interactive('systemctl', '--quiet', 'is-enabled', service) == 0)
         if not is_enabled:
-            run('systemctl', 'enable', now_arg, 'is-enabled', service, fail_on_rc=True)
+            interactive('systemctl', 'enable', now_arg, 'is-enabled', service, fail_on_rc=True)

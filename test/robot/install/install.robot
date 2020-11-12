@@ -11,7 +11,7 @@ Test Pacman Install
     Should Be Equal As Strings    ${result.rc}    0
 
     # Clean slate for future tests.
-    Run    sudo    pacman    -Rs    --noconfirm    jq
+    Run Process    sudo    pacman    -Rs    --noconfirm    jq
 
 Test Skip Pacman Install
     ${SKIP_INSTALL} =    Set Variable    ${TRUE}
@@ -26,7 +26,7 @@ Test Pip Install
     Should Be Equal As Strings    ${result.rc}    0
 
     # Clean slate for future tests.
-    Run    pip    uninstall    --yes    jq
+    Run Process    pip    uninstall    --yes    jq
 
 Test Skip Pip Install
     ${SKIP_INSTALL} =    Set Variable    ${TRUE}
