@@ -4,7 +4,7 @@
 
 ## Usage
 
-- Place the *source/DotfilesLibrary* folder somewhere in your python path, or pass its location to robot using its --pythonpath flag.
+- Run `pip install .` from the top level directory to install.
 
 - The library can then be used within robot framework test suites.
 
