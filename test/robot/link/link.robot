@@ -82,7 +82,7 @@ Test Replace Mode Deep Link
     ${TARGET} =    Get Target
     Set Mode    replace
 
-    # Create A top level file and a top level directory with a file in the target.
+    # Create a top level file and a top level directory with a file in the target.
     Create File    ${TARGET}${/}file    content=file_content
     Create File    ${TARGET}${/}dir${/}dir_file    content=dir_file_content
 
@@ -94,6 +94,17 @@ Test Replace Mode Deep Link
     Link Should Exist    ${CURDIR}${/}.hidden_dir${/}.hidden_dir_file    ${TARGET}${/}.hidden_dir${/}.hidden_dir_file
     ${item_count} =    Count Items In Directory    ${TARGET}
     Should Be Equal As Integers    4    ${item_count}
+
+Test Replace Mode Broken Link
+    ${TARGET} =    Get Target
+    Set Mode    replace
+    # Creating broken symlink will not create intermediate directory.
+    Create Directory    ${TARGET}
+    # Break one of the symlinks and check that it will be replaced on another run.
+    ${result} =    Run Process    ln    -s    foobar    ${TARGET}${/}file
+    Should Be Equal As Strings    0    ${result.rc}
+    Deep Link    ${CURDIR}${/}file
+    Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
 
 Test Backup Mode Deep Link
     ${TARGET} =    Get Target

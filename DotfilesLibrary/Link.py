@@ -159,7 +159,7 @@ class Link:
 
         should_link = True
 
-        if dst.exists():
+        if self._exists(dst):
             if self._mode == self.Mode.SKIP:
                 should_link = False
                 self._print_verbose('Skipping file ' + str(src) + ' whose destination ' + str(dst) + ' already exists.')
@@ -167,15 +167,27 @@ class Link:
                 if self._mode == self.Mode.BACKUP:
                     self._backup(dst)
 
+                # In replace or backup mode, remove conflicting file.
                 os.remove(dst)
 
         if should_link:
             # Make intermediate directories for symlink.
+            print('0')
             os.makedirs(dst.parent, exist_ok=True)
+            print('1')
             os.symlink(src, dst)
+            print('2')
             self._print_verbose('Created link ' + str(dst) + ' pointing to ' + os.readlink(dst))
 
         return should_link
+
+    @staticmethod
+    def _exists(path: Path) -> bool:
+        """
+        Returns true if path exists as a regular file/dir, symlink, or broken symlink.
+        Note that Path.exists() returns false for broken symlinks.
+        """
+        return path.exists() or (path.is_symlink() and not path.readlink().exists())
 
     def _is_ignored(self, path: Path) -> bool:
         """
