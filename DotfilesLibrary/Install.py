@@ -27,17 +27,11 @@ def brew_cask_install(*packages: str):
     _install(['brew', 'cask', 'install'], packages)
 
 def _install(install_cmd: Iterable[str], packages: Iterable[str], check_cmd: Iterable[str] = None):
-    skip_install = BuiltIn().get_variable_value('${SKIP_INSTALL}', False)
+    for package in packages:
+        if check_cmd:
+            is_installed = (interactive(*check_cmd, package) == 0)
+        else:
+            is_installed = False
 
-    if skip_install:
-        install_str = ' '.join(list(install_cmd) + list(packages))
-        logger.info('Skipping install command ' + install_str, also_console=True)
-    else:
-        for package in packages:
-            if check_cmd:
-                is_installed = (interactive(*check_cmd, package) == 0)
-            else:
-                is_installed = False
-
-            if not is_installed:
-                interactive(*install_cmd, package, fail_on_rc=True)
+        if not is_installed:
+            interactive(*install_cmd, package, fail_on_rc=True)

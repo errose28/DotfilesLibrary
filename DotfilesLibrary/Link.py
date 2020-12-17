@@ -23,8 +23,7 @@ class Link:
         cwd=None,
         target=None,
         ignore=None,
-        mode=None,
-        verbose=None):
+        mode=None):
 
         self._robot_file = self._value('SUITE SOURCE')
 
@@ -32,7 +31,6 @@ class Link:
         self.set_target(target)
         self.set_ignore(ignore)
         self.set_mode(mode)
-        self.set_verbose(verbose)
 
         # Do not link the setup file.
         self.add_ignore(self._robot_file)
@@ -50,6 +48,7 @@ class Link:
         if path:
             os.chdir(path)
         # Else, keep current directory.
+        logger.debug('cwd set to ' + path)
 
     @keyword
     def set_target(self, path: str) -> None:
@@ -59,6 +58,7 @@ class Link:
                 path = os.environ['HOME']
 
         self._target = Path(path).expanduser().resolve()
+        logger.debug('target set to ' + str(self._target))
 
     @keyword
     def add_ignore(self, *paths: str) -> None:
@@ -67,6 +67,8 @@ class Link:
             old_ignore = self._ignore
             self._ignore = []
             self._ignore = old_ignore + self._get_paths(*paths)
+
+        logger.debug('ignore set to ' + str(self._ignore))
 
     @keyword
     def set_ignore(self, *paths: str) -> None:
@@ -78,6 +80,8 @@ class Link:
         if paths and paths[0]:
             self._ignore = self._get_paths(*paths)
 
+        logger.debug('ignore set to ' + str(self._ignore))
+
     @keyword
     def set_mode(self, mode: str) -> None:
         # Sets mode based a string value using any case.
@@ -87,15 +91,7 @@ class Link:
                 mode = 'skip'
 
         self._mode = self.Mode[mode.upper()]
-
-    @keyword
-    def set_verbose(self, verbose: bool) -> None:
-        if verbose is None:
-            verbose = self._value('VERBOSE')
-            if verbose is None:
-                verbose = False
-
-        self._verbose = verbose
+        logger.debug('mode set to ' + mode)
 
     ### Exposed Keyword Linking Methods ###
 
@@ -162,7 +158,7 @@ class Link:
         if self._exists(dst):
             if self._mode == self.Mode.SKIP:
                 should_link = False
-                self._print_verbose('Skipping file ' + str(src) + ' whose destination ' + str(dst) + ' already exists.')
+                logger.info('Skipping file ' + str(src) + ' whose destination ' + str(dst) + ' already exists.')
             else:
                 if self._mode == self.Mode.BACKUP:
                     self._backup(dst)
@@ -172,12 +168,9 @@ class Link:
 
         if should_link:
             # Make intermediate directories for symlink.
-            print('0')
             os.makedirs(dst.parent, exist_ok=True)
-            print('1')
             os.symlink(src, dst)
-            print('2')
-            self._print_verbose('Created link ' + str(dst) + ' pointing to ' + os.readlink(dst))
+            logger.info('Created link ' + str(dst) + ' pointing to ' + os.readlink(dst))
 
         return should_link
 
@@ -229,9 +222,11 @@ class Link:
             # Cannot glob absolute paths, so make them relative to root, glob, then resolve back to the root.
             unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
 
+            logger.debug('Path string ' + path_str + ' resolved to ' + str(unglobbed_paths))
+
             for try_path in unglobbed_paths:
                 if self._is_ignored(try_path):
-                    self._print_verbose('Ignoring ' + str(try_path))
+                    logger.debug('Ignoring ' + str(try_path) + ' when resolving path ' + path_str)
                 else:
                     path_list.append(try_path)
 
@@ -245,15 +240,10 @@ class Link:
             backup = backup.parent / (backup.name + '~' + str(i) + '~')
 
         shutil.copyfile(path, backup)
-        self._print_verbose('Backup of file ' + str(path) + ' created at ' + str(backup))
+        logger.info('Backup of file ' + str(path) + ' created at ' + str(backup))
 
         return backup
 
     @staticmethod
     def _value(name, default=None):
         return BuiltIn().get_variable_value('${' + name + '}', default)
-
-    def _print_verbose(self, msg: str) -> None:
-        # TODO: Determine whether to keep verbose flag or just use robot's log levels.
-        if self._verbose:
-            logger.info(msg, also_console=True)

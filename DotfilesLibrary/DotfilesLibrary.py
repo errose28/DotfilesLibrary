@@ -20,7 +20,6 @@ class DotfilesLibrary:
             self._link.add_ignore,
             self._link.set_ignore,
             self._link.set_mode,
-            self._link.set_verbose,
             self._link.shallow_link,
             self._link.deep_link
         ]
