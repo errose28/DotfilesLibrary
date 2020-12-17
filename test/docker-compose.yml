@@ -5,12 +5,13 @@ services:
     volumes:
       # Robot Libraries:
       - ./lib/test.resource:/test/lib/test.resource:ro
-      - ../source/DotfilesLibrary:/test/lib/DotfilesLibrary:ro
+      - ../DotfilesLibrary:/test/lib/DotfilesLibrary:ro
       # Test Output:
       - ./results:/test/results
       # Test files:
       - ./robot:/test/robot:ro
-    # The --outputdir flag does not appear to work,
-    # so manually move to the location output files should be placed.
-    working_dir: /test/results
-    command: robot --pythonpath /test/lib /test/robot
+    working_dir: /test
+    entrypoint: robot --outputdir=/test/results --pythonpath=/test/lib
+    # Run all tests by default, unless others are passed.
+    # Test paths should be relative to the compose directory.
+    command: robot

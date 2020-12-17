@@ -5,6 +5,6 @@ if [ "$1" = '-i' ]; then
     docker-compose run --rm test_service /bin/sh
 else
     # Run tests and display the results.
-    docker-compose run --rm test_service
+    docker-compose run --rm test_service "$@"
 fi
 
