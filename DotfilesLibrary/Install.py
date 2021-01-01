@@ -15,6 +15,7 @@ def yay_install(*packages: str):
 
 @keyword
 def nix_attr_install(*attributes: str):
+    attributes = map(lambda attr: 'nixos.' + attr, attributes)
     _install(['nix-env', '--install', '--attribute'], attributes)
 
 @keyword
