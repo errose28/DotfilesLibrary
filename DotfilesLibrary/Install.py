@@ -14,6 +14,14 @@ def yay_install(*packages: str):
     _install(['yay', '--noconfirm', '-S'], packages, check_cmd=['yay', '-Q'])
 
 @keyword
+def nix_attr_install(*attributes: str):
+    _install(['nix-env', '--install', '--attribute'], attributes)
+
+@keyword
+def nix_install(*names: str):
+    _install(['nix-env', '--install'], names)
+
+@keyword
 def pip_install(*packages: str, user=True):
     user_cmd = '--user' if user else ''
     _install(['pip', 'install', user_cmd], packages)
