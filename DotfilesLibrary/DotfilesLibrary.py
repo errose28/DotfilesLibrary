@@ -10,7 +10,7 @@ class DotfilesLibrary:
         self._keywords = [
             Misc.interactive,
             Misc.enable_systemd_services,
-            Install.nix_install
+            Install.nix_install,
             Install.pacman_install,
             Install.yay_install,
             Install.pip_install,
