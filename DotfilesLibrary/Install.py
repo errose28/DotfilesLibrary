@@ -14,10 +14,10 @@ def yay_install(*packages: str):
     _install(['yay', '--noconfirm', '-S'], packages, check_cmd=['yay', '-Q'])
 
 @keyword
-def nix_install(*names: str, attributes=True):
-    if attributes:
+def nix_install(*names: str, attr=True):
+    if attr:
         attrs_list = map(lambda attr: 'nixos.' + attr, names)
-        _install(['nix-env', '--install', '--attribute'], attrs_list)
+        _install(['nix-env', '--install', '--attr'], attrs_list)
     else:
         _install(['nix-env', '--install'], names)
 
