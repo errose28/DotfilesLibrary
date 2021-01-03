@@ -22,7 +22,7 @@ def nix_install(*names: str, attr=True):
         _install(['nix-env', '--install'], names)
 
 @keyword
-def pip_install(*packages: str, user=True):
+def pip_install(*packages: str, user=False):
     user_cmd = '--user' if user else ''
     _install(['pip', 'install', user_cmd], packages)
 

@@ -24,4 +24,4 @@ def enable_systemd_services(*services: str, now=True):
         # Check if services are enabled first so user is not unnecessary prompted for password.
         is_enabled = (interactive('systemctl', '--quiet', 'is-enabled', service) == 0)
         if not is_enabled:
-            interactive('systemctl', 'enable', now_arg, 'is-enabled', service, fail_on_rc=True)
+            interactive('systemctl', 'enable', now_arg, service, fail_on_rc=True)
