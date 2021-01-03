@@ -14,7 +14,7 @@ def yay_install(*packages: str):
     _install(['yay', '--noconfirm', '-S'], packages, check_cmd=['yay', '-Q'])
 
 @keyword
-def pip_install(*packages: str, user=True):
+def pip_install(*packages: str, user=False):
     user_cmd = '--user' if user else ''
     _install(['pip', 'install', user_cmd], packages)
 
