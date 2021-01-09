@@ -23,8 +23,12 @@ def nix_install(*names: str, attr=True):
 
 @keyword
 def pip_install(*packages: str, user=False):
-    user_cmd = '--user' if user else ''
-    _install(['pip', 'install', user_cmd], packages)
+    user_cmd = '--user' if user else None
+    cmd = ['pip', 'install']
+
+    if user_cmd:
+        cmd += [user_cmd]
+    _install(cmd, packages)
 
 @keyword
 def brew_install(*packages: str):
