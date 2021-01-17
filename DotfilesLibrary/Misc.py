@@ -17,11 +17,5 @@ def interactive(*cmd: str, fail_on_rc=False, shell=False) -> int:
     return rc
 
 @keyword
-def enable_systemd_services(*services: str, now=True):
-    now_arg = '--now' if now else ''
-
-    for service in services:
-        # Check if services are enabled first so user is not unnecessary prompted for password.
-        is_enabled = (interactive('systemctl', '--quiet', 'is-enabled', service) == 0)
-        if not is_enabled:
-            interactive('systemctl', 'enable', now_arg, 'is-enabled', service, fail_on_rc=True)
+def emit(*args):
+    logger.info('Emit called with argument tuple: ' + str(args));

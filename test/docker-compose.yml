@@ -3,15 +3,16 @@ services:
   test_service:
     image: robot-archlinux
     volumes:
-      # Robot Libraries:
-      - ./lib/test.resource:/test/lib/test.resource:ro
-      - ../DotfilesLibrary:/test/lib/DotfilesLibrary:ro
+      # Code to test:
+      - ../DotfilesLibrary:/test/src/DotfilesLibrary:ro
+      # Test resources:
+      - ./lib:/test/lib:ro
       # Test Output:
       - ./results:/test/results
       # Test files:
       - ./robot:/test/robot:ro
     working_dir: /test
-    entrypoint: robot --outputdir=/test/results --pythonpath=/test/lib
+    entrypoint: robot --outputdir=/test/results --pythonpath=/test/src:/test/lib --listener=EmitListener
     # Run all tests by default, unless others are passed.
     # Test paths should be relative to the compose directory.
     command: robot

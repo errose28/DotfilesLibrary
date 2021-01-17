@@ -1,6 +1,6 @@
 *** Settings ***
-Resource    /test/lib/test.resource
-Library    /test/lib/DotfilesLibrary
+Resource    test.resource
+Library     DotfilesLibrary
 
 *** Test Cases ***
 Test ~ In Target
