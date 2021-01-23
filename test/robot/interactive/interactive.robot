@@ -1,7 +1,7 @@
 *** Settings ***
-Resource    /test/lib/test.resource
-Library    /test/lib/DotfilesLibrary
-Library    OperatingSystem
+Resource    test.resource
+Library     DotfilesLibrary
+Library     OperatingSystem
 
 *** Test Cases ***
 # TODO: Figure out way to test by passing in stdin and reading stdout.

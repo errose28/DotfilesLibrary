@@ -1,5 +1,4 @@
 from .Link import Link
-from . import Install
 from . import Misc
 
 class DotfilesLibrary:
@@ -9,13 +8,7 @@ class DotfilesLibrary:
         # TODO: Use reflection to get functions from all modules.
         self._keywords = [
             Misc.interactive,
-            Misc.enable_systemd_services,
-            Install.nix_install,
-            Install.pacman_install,
-            Install.yay_install,
-            Install.pip_install,
-            Install.brew_install,
-            Install.brew_cask_install,
+            Misc.emit,
             self._link.set_cwd,
             self._link.set_target,
             self._link.add_ignore,
