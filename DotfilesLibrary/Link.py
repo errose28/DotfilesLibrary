@@ -6,7 +6,7 @@ from enum import Enum
 from robot.api.deco import keyword, library
 from robot.api import logger
 
-import Config
+from DotfilesLibrary import Config
 
 @library(scope='SUITE')
 class Link:
@@ -26,7 +26,7 @@ class Link:
         ignore=None,
         mode=None):
 
-        self._robot_file = Config.value('SUITE SOURCE')
+        self._robot_file = Config.get_value('SUITE SOURCE')
 
         self.set_cwd(cwd)
         self.set_target(target)
@@ -54,7 +54,7 @@ class Link:
     @keyword
     def set_target(self, path: str) -> None:
         if not path:
-            path = Config.value(Config.TARGET, default=os.environ['HOME'])
+            path = Config.get_value(Config.TARGET, default=os.environ['HOME'])
 
         self._target = Path(path).expanduser().resolve()
         logger.debug('target set to ' + str(self._target))
@@ -85,7 +85,7 @@ class Link:
     def set_mode(self, mode: str) -> None:
         # Sets mode based a string value using any case.
         if not mode:
-            mode = Config.value(Config.MODE, default='skip')
+            mode = Config.get_value(Config.MODE, default='skip')
 
         self._mode = self.Mode[mode.upper()]
         logger.debug('mode set to ' + mode)
