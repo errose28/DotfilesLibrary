@@ -1,6 +1,5 @@
 import subprocess
 from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
 
 @keyword
@@ -15,7 +14,3 @@ def interactive(*cmd: str, fail_on_rc=False, shell=False) -> int:
         raise ValueError(cmd_str + ' failed with exit code ' + str(rc))
 
     return rc
-
-@keyword
-def emit(*args):
-    logger.info('Emit called with argument tuple: ' + str(args));

@@ -1,5 +1,5 @@
-from .Link import Link
-from . import Misc
+from Link import Link
+import Interactive
 
 class DotfilesLibrary:
     def __init__(self, *args, **kwargs):
@@ -7,8 +7,7 @@ class DotfilesLibrary:
 
         # TODO: Use reflection to get functions from all modules.
         self._keywords = [
-            Misc.interactive,
-            Misc.emit,
+            Interactive.interactive,
             self._link.set_cwd,
             self._link.set_target,
             self._link.add_ignore,
