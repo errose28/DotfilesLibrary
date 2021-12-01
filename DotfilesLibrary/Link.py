@@ -5,8 +5,9 @@ import shutil
 from enum import Enum
 from robot.api.deco import keyword, library
 from robot.api import logger
+from robot.libraries.BuiltIn import BuiltIn
 
-from DotfilesLibrary import Config
+from DotfilesLibrary import ConfigVariables
 
 @library(scope='SUITE')
 class Link:
@@ -26,7 +27,7 @@ class Link:
         ignore=None,
         mode=None):
 
-        self._robot_file = Config.get_value('SUITE SOURCE')
+        self._robot_file = BuiltIn().get_variable_value('${SUITE SOURCE}')
 
         self.set_cwd(cwd)
         self.set_target(target)
@@ -54,10 +55,10 @@ class Link:
     @keyword
     def set_target(self, path: str) -> None:
         if not path:
-            path = Config.get_value(Config.TARGET, default=os.environ['HOME'])
+            path = ConfigVariables.TARGET.value
 
         self._target = Path(path).expanduser().resolve()
-        logger.debug('target set to ' + str(self._target))
+        logger.debug(f'target set to {self._target}')
 
     @keyword
     def add_ignore(self, *paths: str) -> None:
@@ -85,7 +86,7 @@ class Link:
     def set_mode(self, mode: str) -> None:
         # Sets mode based a string value using any case.
         if not mode:
-            mode = Config.get_value(Config.MODE, default='skip')
+            mode = ConfigVariables.MODE.value
 
         self._mode = self.Mode[mode.upper()]
         logger.debug('mode set to ' + mode)

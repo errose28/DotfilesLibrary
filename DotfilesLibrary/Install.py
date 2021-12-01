@@ -1,22 +1,22 @@
 from robot.api.deco import keyword, library
 from robot.api import logger
 
-from DotfilesLibrary import Config
+from DotfilesLibrary import ConfigVariables
 
 @library(scope='SUITE')
 class Install:
     def __init__(self):
         self._has_installer = False
-        installer_value = Config.get_value(Config.INSTALLER)
+        installer_value = ConfigVariables.INSTALLER.value
         if installer_value:
-            install_module_name, *self._install_functions = Config.split_value(installer_value)
+            install_module_name, *self._install_functions = installer_value
             self._install_module = __import__(install_module_name)
             self._has_installer = True
 
     @keyword
     def install(self, default_pkg_name, **pkg_aliases):
         if not self._has_installer:
-            logger.info(f'{Config.INSTALLER} not defined. Skipping install keyword passed ' +
+            logger.info(f'{ConfigVariables.INSTALLER.name} not defined. Skipping `Install` keyword passed ' +
                 '{default_pkg_name} {pkg_aliases}')
             return
 
