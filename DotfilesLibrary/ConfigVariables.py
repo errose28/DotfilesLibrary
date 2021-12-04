@@ -11,7 +11,7 @@ class ConfigVariable:
     @property
     def value(self) -> Union[str, List[str]]:
         value =  BuiltIn().get_variable_value('${' + self._name + '}', self._default)
-        if value and self._sep:
+        if type(value) is str and self._sep:
             value = value.split(self._sep)
         return value
 
@@ -19,7 +19,7 @@ class ConfigVariable:
     def name(self) -> str:
         return self._name
 
-# Configurations that can be set by the user
+# Configurations that can be set by the user.
 
 MODE = ConfigVariable('MODE', default='skip')
 TARGET = ConfigVariable('TARGET', default=os.path.expanduser('~'))
