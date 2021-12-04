@@ -12,26 +12,46 @@ Clear Installers
     ...    /installer3.out
 
 Set Module Installers String
-    [Arguments]    @{installers}
-    ${Installer String} =    Evaluate    ':'.join(@{installers})
-    Set Test Variable    ${INSTALLER}    Installers:${Installer String}
+    [Arguments]    @{use args}
+    Set Test Variable    ${INSTALLERS}    Installers
+    ${use string} =    Evaluate    ':'.join(@{use args})
+    Set Test Variable    ${USE}    ${use string}
 
 Set Module Installers List
-    [Arguments]    @{installers}
-    Set Test Variable    @{INSTALLER}    Installers    @{installers}
+    [Arguments]    @{use args}
+    Set Test Variable    ${INSTALLERS}    Installers
+    Set Test Variable    @{USE}    @{use args}
 
 Set Script Installers String
-    [Arguments]    @{installers}
-    ${Installer String} =    Evaluate    ':'.join(@{installers})
-    Set Test Variable    ${INSTALLER}    ${CURDIR}${/}installers.sh:${Installer String}
+    [Arguments]    @{use args}
+    Set Test Variable    ${INSTALLERS}    ${CURDIR}${/}installers.sh
+    ${use string} =    Evaluate    ':'.join(@{use args})
+    Set Test Variable    ${USE}    ${use string}
 
 Set Script Installers List
-    [Arguments]    @{installers}
-    Set Test Variable    @{INSTALLER}    ${CURDIR}${/}installers.sh    @{installers}
+    [Arguments]    @{use args}
+    Set Test Variable    ${INSTALLERS}    ${CURDIR}${/}installers.sh
+    Set Test Variable    @{USE}    @{use args}
 
 *** Test Cases ***
 Test With No Installers
     # Should log message, do nothing.
+    Install    pkg1
+    File Should Not Exist    /installer1.out
+    File Should Not Exist    /installer2.out
+    File Should Not Exist    /installer3.out
+
+Test With Installers Without Use
+    # Should log warning, do nothing.
+    Set Test Variable    ${INSTALLERS}    notexist
+    Install    pkg1
+    File Should Not Exist    /installer1.out
+    File Should Not Exist    /installer2.out
+    File Should Not Exist    /installer3.out
+
+Test Without Installers With Use
+    # Should log warning, do nothing.
+    Set Test Variable    ${USE}    notexist
     Install    pkg1
     File Should Not Exist    /installer1.out
     File Should Not Exist    /installer2.out

@@ -14,14 +14,13 @@ class Install:
 
     def __init__(self):
         self._installer_type = self.InstallerType.NONE
-        installer_value = ConfigVariables.INSTALLER.value
-        if installer_value:
-            self._installer, *self._install_methods = installer_value
+        self._installer = ConfigVariables.INSTALLERS.value
+        self._install_methods = ConfigVariables.USE.value
 
-            if not self._install_methods:
-                logger.warn(f'{ConfigVariables.INSTALLER.name} specified without install methods, ' \
-                    'nothing will be installed.')
-
+        if bool(self._installer) != bool(self._install_methods):
+            logger.warn(f'{ConfigVariables.INSTALLERS.name} and {ConfigVariables.USE.name} should be set together. ' \
+                'Nothing will be installed.')
+        elif self._installer:
             # If the install script is in the python path, it will be used as a module.
             # Else, it will be invoked as a script.
             try:
@@ -36,7 +35,7 @@ class Install:
     @keyword
     def install(self, *default_pkg_args: str, **alias_pkg_args: Any):
         if self._installer_type is self.InstallerType.NONE:
-            logger.info(f'{ConfigVariables.INSTALLER.name} not defined. Skipping `Install` keyword passed ' +
+            logger.info(f'{ConfigVariables.INSTALLERS.name} not defined. Skipping `Install` keyword passed ' +
                 '{default_pkg_args} {pkg_alias_args}')
             return
 

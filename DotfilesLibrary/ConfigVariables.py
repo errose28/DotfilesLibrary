@@ -23,4 +23,5 @@ class ConfigVariable:
 
 MODE = ConfigVariable('MODE', default='skip')
 TARGET = ConfigVariable('TARGET', default=os.path.expanduser('~'))
-INSTALLER = ConfigVariable('INSTALLER', sep=':')
+INSTALLERS = ConfigVariable('INSTALLERS')
+USE = ConfigVariable('USE', sep=':')
