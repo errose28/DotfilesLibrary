@@ -13,25 +13,25 @@ Clear Installers
 
 Set Module Installers String
     [Arguments]    @{use args}
-    Set Test Variable    ${INSTALLERS}    Installers
+    Set Test Variable    ${INSTALLER}    Installers
     ${use string} =    Evaluate    ':'.join(@{use args})
-    Set Test Variable    ${USE}    ${use string}
+    Set Test Variable    ${INSTALL_WITH}    ${use string}
 
 Set Module Installers List
     [Arguments]    @{use args}
-    Set Test Variable    ${INSTALLERS}    Installers
-    Set Test Variable    @{USE}    @{use args}
+    Set Test Variable    ${INSTALLER}    Installers
+    Set Test Variable    @{INSTALL_WITH}    @{use args}
 
 Set Script Installers String
     [Arguments]    @{use args}
-    Set Test Variable    ${INSTALLERS}    ${CURDIR}${/}installers.sh
+    Set Test Variable    ${INSTALLER}    ${CURDIR}${/}installers.sh
     ${use string} =    Evaluate    ':'.join(@{use args})
-    Set Test Variable    ${USE}    ${use string}
+    Set Test Variable    ${INSTALL_WITH}    ${use string}
 
 Set Script Installers List
     [Arguments]    @{use args}
-    Set Test Variable    ${INSTALLERS}    ${CURDIR}${/}installers.sh
-    Set Test Variable    @{USE}    @{use args}
+    Set Test Variable    ${INSTALLER}    ${CURDIR}${/}installers.sh
+    Set Test Variable    @{INSTALL_WITH}    @{use args}
 
 *** Test Cases ***
 Test With No Installers
@@ -43,7 +43,7 @@ Test With No Installers
 
 Test With Installers Without Use
     # Should log warning, do nothing.
-    Set Test Variable    ${INSTALLERS}    notexist
+    Set Test Variable    ${INSTALLER}    notexist
     Install    pkg1
     File Should Not Exist    /installer1.out
     File Should Not Exist    /installer2.out
@@ -51,7 +51,7 @@ Test With Installers Without Use
 
 Test Without Installers With Use
     # Should log warning, do nothing.
-    Set Test Variable    ${USE}    notexist
+    Set Test Variable    ${INSTALL_WITH}    notexist
     Install    pkg1
     File Should Not Exist    /installer1.out
     File Should Not Exist    /installer2.out
