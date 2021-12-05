@@ -12,7 +12,7 @@ services:
       # Test files:
       - ./robot:/test/robot:ro
     working_dir: /test
-    entrypoint: robot --outputdir=/test/results --pythonpath=/test/src:/test/lib --loglevel=DEBUG
+    entrypoint: robot --outputdir=/test/results --pythonpath=/test/src:/test/lib --listener=EmitListener --loglevel=DEBUG
     # Run all tests by default, unless others are passed.
     # Test paths should be relative to the compose directory.
     command: robot

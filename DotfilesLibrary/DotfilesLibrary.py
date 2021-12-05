@@ -1,6 +1,6 @@
 from DotfilesLibrary.Install import Install
 from DotfilesLibrary.Link import Link
-from DotfilesLibrary import Interactive
+from DotfilesLibrary import Interactive, Emit
 
 class DotfilesLibrary:
     def __init__(self, *args, **kwargs):
@@ -10,6 +10,7 @@ class DotfilesLibrary:
         # TODO: Use reflection to get functions from all modules.
         self._keywords = [
             Interactive.interactive,
+            Emit.emit,
             self._install.install,
             self._link.set_cwd,
             self._link.set_target,
