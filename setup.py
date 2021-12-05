@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
   name = 'DotfilesLibrary',
-  version = '0.1.0',
+  version = '0.2.0-alpha',
   author = 'Ethan Rose',
   author_email = 'errose28@gmail.com',
   packages = setuptools.find_packages(),
