@@ -4,8 +4,10 @@ from pathlib import Path
 import shutil
 from enum import Enum
 from robot.api.deco import keyword, library
-from  robot.api import logger
+from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+
+from DotfilesLibrary import ConfigVariables
 
 @library(scope='SUITE')
 class Link:
@@ -25,7 +27,7 @@ class Link:
         ignore=None,
         mode=None):
 
-        self._robot_file = self._value('SUITE SOURCE')
+        self._robot_file = BuiltIn().get_variable_value('${SUITE SOURCE}')
 
         self.set_cwd(cwd)
         self.set_target(target)
@@ -53,12 +55,10 @@ class Link:
     @keyword
     def set_target(self, path: str) -> None:
         if not path:
-            path = self._value('TARGET')
-            if not path:
-                path = os.environ['HOME']
+            path = ConfigVariables.TARGET.value
 
         self._target = Path(path).expanduser().resolve()
-        logger.debug('target set to ' + str(self._target))
+        logger.debug(f'target set to {self._target}')
 
     @keyword
     def add_ignore(self, *paths: str) -> None:
@@ -86,9 +86,7 @@ class Link:
     def set_mode(self, mode: str) -> None:
         # Sets mode based a string value using any case.
         if not mode:
-            mode = self._value('MODE')
-            if not mode:
-                mode = 'skip'
+            mode = ConfigVariables.MODE.value
 
         self._mode = self.Mode[mode.upper()]
         logger.debug('mode set to ' + mode)
@@ -100,7 +98,7 @@ class Link:
         """
         For each path in paths, creates a symlink immediately under the target with the same name as the file or
         directory the path specifies. Files are linked using absolute paths. Raises ValueError if paths are not
-        subidrectories of the current working directory.
+        subdirectories of the current working directory.
 
         Example:
         target = '/target'
@@ -117,7 +115,7 @@ class Link:
         """
         For each path in paths, recursively searches for all files contained in each subdirectory, and creates a
         symlink in target contained in the file's subdirectories that points to each file. Raises ValueError if paths
-        are not subidrectories of the current working directory.
+        are not subdirectories of the current working directory.
 
         Example:
         target = '/target'
@@ -243,7 +241,3 @@ class Link:
         logger.info('Backup of file ' + str(path) + ' created at ' + str(backup))
 
         return backup
-
-    @staticmethod
-    def _value(name, default=None):
-        return BuiltIn().get_variable_value('${' + name + '}', default)

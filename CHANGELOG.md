@@ -2,11 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Better support for package installation
+    - `INSTALLER` config variable to specify script defining install commands.
+    - `INSTALL_WITH` config variable to specify package manager info passed to `INSTALLER`.
+    - `Install` keyword to specify packages or other arguments passed to `INSTALLER`.
+
 ## [0.1.0] - 2021-01-22
 
 ### Added
 
-- Support for symlink deploys with `Deep Link` and `Shallow Link`
+- Support for absolute symlink deploys with `Deep Link` and `Shallow Link`
     - Globbing support for arguments.
 
 - Suite scoped setters for target directory, current working directory, and ignored files.
