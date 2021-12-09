@@ -20,11 +20,13 @@ Test Return Code
     Directory Should Not Exist    /foo
 
 Test Fail On Return Code
-    # By default, Interactive will not fail if the return code is non-zero.
-    ${rc} =    Interactive    rmdir    /foo
+    Directory Should Not Exist    /foo
+    # By default, Interactive will fail if the return code is non-zero.
+    Run Keyword And Expect Error    ValueError:*    Interactive    rmdir    /foo
+
+    ${rc} =    Interactive    rmdir    /foo    fail_on_rc=False
     Should Not Be Equal As Strings    ${rc}    0
 
-    Run Keyword And Expect Error    ValueError:*    Interactive    rmdir    /foo    fail_on_rc=True
 
 Test Shell
     # Default is to not run commands in shell.

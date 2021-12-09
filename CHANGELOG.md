@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
     - `INSTALL_WITH` config variable to specify package manager info passed to `INSTALLER`.
     - `Install` keyword to specify packages or other arguments passed to `INSTALLER`.
 
+### Changed
+
+- `Interactive` keyword argument `fail_on_rc` now defaults to `True`.
+
 ## [0.1.0] - 2021-01-22
 
 ### Added

@@ -3,7 +3,7 @@ from robot.api.deco import keyword
 from robot.api import logger
 
 @keyword
-def interactive(*cmd: str, fail_on_rc=False, shell=False) -> int:
+def interactive(*cmd: str, fail_on_rc=True, shell=False) -> int:
     cmd_str = ' '.join(cmd)
     logger.debug(f'Executing `{cmd_str}`')
 
