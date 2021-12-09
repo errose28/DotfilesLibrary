@@ -36,7 +36,7 @@ class Install:
     def install(self, *default_pkg_args: str, **alias_pkg_args: Any):
         if self._installer_type is self.InstallerType.NONE:
             logger.info(f'{ConfigVariables.INSTALLER.name} not defined. Skipping `Install` keyword passed ' +
-                '{default_pkg_args} {pkg_alias_args}')
+                f'{default_pkg_args} {alias_pkg_args}')
             return
 
         for install_function in self._install_methods:
@@ -53,10 +53,10 @@ class Install:
     def _install(self, install_function: str, pkg_args: List[str]) -> None:
         if self._installer_type is self.InstallerType.SCRIPT:
             cmd = [self._installer, install_function, *pkg_args]
-            logger.debug(f'Running install command `{cmd}`')
+            logger.info(f'Running install command {cmd}')
             Interactive.interactive(*cmd)
         elif self._installer_type is self.InstallerType.MODULE:
-            logger.debug(f'Running install function `{self._installer}.{install_function}({", ".join(pkg_args)})`')
+            logger.info(f'Running install function `{self._installer.__name__}.{install_function}({", ".join(pkg_args)})`')
             getattr(self._installer, install_function)(*pkg_args)
         else:
-            logger.debug(f'Skipping install since no install script or module is defined')
+            logger.info(f'Skipping install since no install script or module is defined')

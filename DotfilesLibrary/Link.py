@@ -50,7 +50,7 @@ class Link:
         if path:
             os.chdir(path)
         # Else, keep current directory.
-        logger.debug('cwd set to ' + path)
+        logger.debug(f'cwd set to {path}')
 
     @keyword
     def set_target(self, path: str) -> None:
@@ -68,7 +68,7 @@ class Link:
             self._ignore = []
             self._ignore = old_ignore + self._get_paths(*paths)
 
-        logger.debug('ignore set to ' + str(self._ignore))
+        logger.debug(f'ignore set to {self._ignore}')
 
     @keyword
     def set_ignore(self, *paths: str) -> None:
@@ -80,7 +80,7 @@ class Link:
         if paths and paths[0]:
             self._ignore = self._get_paths(*paths)
 
-        logger.debug('ignore set to ' + str(self._ignore))
+        logger.debug(f'ignore set to {self._ignore}')
 
     @keyword
     def set_mode(self, mode: str) -> None:
@@ -89,7 +89,7 @@ class Link:
             mode = ConfigVariables.MODE.value
 
         self._mode = self.Mode[mode.upper()]
-        logger.debug('mode set to ' + mode)
+        logger.debug(f'mode set to {mode}')
 
     ### Exposed Keyword Linking Methods ###
 
@@ -156,7 +156,7 @@ class Link:
         if self._exists(dst):
             if self._mode == self.Mode.SKIP:
                 should_link = False
-                logger.info('Skipping file ' + str(src) + ' whose destination ' + str(dst) + ' already exists.')
+                logger.info(f'Skipping file {src} whose destination {dst} already exists.')
             else:
                 if self._mode == self.Mode.BACKUP:
                     self._backup(dst)
@@ -168,7 +168,7 @@ class Link:
             # Make intermediate directories for symlink.
             os.makedirs(dst.parent, exist_ok=True)
             os.symlink(src, dst)
-            logger.info('Created link ' + str(dst) + ' pointing to ' + os.readlink(dst))
+            logger.info(f'Created link {dst} pointing to {os.readlink(dst)}')
 
         return should_link
 
@@ -220,11 +220,11 @@ class Link:
             # Cannot glob absolute paths, so make them relative to root, glob, then resolve back to the root.
             unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
 
-            logger.debug('Path string ' + path_str + ' resolved to ' + str(unglobbed_paths))
+            logger.debug(f'Path string {path_str} resolved to {unglobbed_paths}')
 
             for try_path in unglobbed_paths:
                 if self._is_ignored(try_path):
-                    logger.debug('Ignoring ' + str(try_path) + ' when resolving path ' + path_str)
+                    logger.debug(f'Ignoring {try_path} when resolving path {path_str}')
                 else:
                     path_list.append(try_path)
 
@@ -238,6 +238,6 @@ class Link:
             backup = backup.parent / (backup.name + '~' + str(i) + '~')
 
         shutil.copyfile(path, backup)
-        logger.info('Backup of file ' + str(path) + ' created at ' + str(backup))
+        logger.info(f'Backup of file {path} created at {backup}')
 
         return backup
