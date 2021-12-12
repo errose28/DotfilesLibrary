@@ -18,7 +18,7 @@ class Install:
         self._install_methods = ConfigVariables.INSTALL_WITH.value
 
         if bool(self._installer) != bool(self._install_methods):
-            logger.warn(f'{ConfigVariables.INSTALLER.name} and {ConfigVariables.INSTALL_WITH.name} should be set together. ' \
+            logger.debug(f'{ConfigVariables.INSTALLER.name} and {ConfigVariables.INSTALL_WITH.name} are not set together. ' \
                 'Nothing will be installed.')
         elif self._installer:
             # If the install script is in the python path, it will be used as a module.
