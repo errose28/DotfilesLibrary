@@ -75,6 +75,7 @@ class Link:
         self._ignore = []
         # Only add paths if the argument is not None or empty, and the first element is not None.
         if paths and paths[0]:
+            logger.debug('foo ' + str(type(paths[0])))
             self._ignore = self._expand_paths(*paths)
         # Re-add the current robot file to the ignore list after reseting the list.
         self.add_ignore(self._robot_file)
@@ -107,6 +108,8 @@ class Link:
         """
 
         for path in self._expand_paths(*paths):
+            if not path.exists():
+                raise FileNotFoundError(f'Cannot shallow link {path} which not exist')
             if not self._is_ignored(path):
                 target_path = self._get_target(path)
                 self._link(path, target_path)
@@ -232,7 +235,12 @@ class Link:
             path = Path(path_str).expanduser().resolve()
             # Cannot glob absolute paths, so make them relative to root, glob, then resolve back to the root.
             unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
+            prev_path_list_len = len(path_list)
             path_list += unglobbed_paths
+            # If the generator did not have any items, the path given did not exist.
+            # Note that we cannot query the size of the generator without expanding it.
+            if len(path_list) == prev_path_list_len:
+                raise FileNotFoundError(f'{path} does not exist or has no glob matches.')
 
         return path_list
 

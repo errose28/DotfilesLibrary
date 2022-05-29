@@ -159,17 +159,6 @@ Test Add Then Set Ignore
     ${item_count} =    Count Items In Directory    ${TARGET}
     Should Be Equal As Integers    3    ${item_count}
 
-Test Clear Ignore With None
-    ${TARGET} =    Get Target
-    Add Ignore    dir
-    Set Ignore    None
-    Deep Link    dir/dir_file
-
-    Link Should Exist    ${CURDIR}${/}dir${/}dir_file    ${TARGET}${/}dir${/}dir_file
-
-    ${item_count} =    Count Items In Directory    ${TARGET}
-    Should Be Equal As Integers    1    ${item_count}
-
 Test Clear Ignore With No Arguments
     ${TARGET} =    Get Target
     Add Ignore    dir

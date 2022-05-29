@@ -126,3 +126,13 @@ Test Backup Mode Deep Link
     # Extra backup file in top level directory was added.
     Should Be Equal As Integers    5    ${item_count}
 
+Test Links When Passed Nonexistant Files
+    ${TARGET} =    Get Target
+    ${error} =     Set Variable    FileNotFoundError: /test/robot/link/nonexistant does not exist or has no glob matches.
+    Run Keyword And Expect Error    ${error}    Deep Link    nonexistant
+    Run Keyword And Expect Error    ${error}    Shallow Link    nonexistant
+    # Even if only one of the inputs does not exist, an error should still be raised.
+    Run Keyword And Expect Error    ${error}    Deep Link    dir    nonexistant
+    Directory Should Not Exist    ${TARGET}/dir
+    Run Keyword And Expect Error    ${error}    Shallow Link    nonexistant    dir
+    Directory Should Not Exist    ${TARGET}/dir

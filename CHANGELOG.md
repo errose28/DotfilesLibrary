@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 
 - `Interactive` keyword argument `fail_on_rc` now defaults to `True`.
 
+- `Deep Link` and `Shallow Link` keywords now raise `FileNotFoundError` if given an invalid path.
+
 ### Fixed
 
 - Fix bugs involving `Add Ignore` and `Set Ignore`.
