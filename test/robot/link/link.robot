@@ -90,7 +90,25 @@ Test Replace Mode Deep Link
     ${item_count} =    Count Items In Directory    ${TARGET}
     Should Be Equal As Integers    4    ${item_count}
 
-Test Replace Mode Broken Link
+Test Replace Mode Shallow Link
+    ${TARGET} =    Get Target
+    Set Mode    replace
+
+    # Create a top level file and a top level directory with a file in the target.
+    Create File    ${TARGET}${/}file    content=file_content
+    Create File    ${TARGET}${/}dir${/}other_file    content=other_file_content
+
+    # Shallow linking dir should replace dir and its contents that exist at the target.
+    Shallow Link    dir    file
+
+    File Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
+    Link Should Exist    ${CURDIR}${/}dir    ${TARGET}${/}dir
+    File Should Exist    ${CURDIR}${/}dir${/}dir_file
+    File Should Not Exist    ${CURDIR}${/}dir${/}other_file
+    ${item_count} =    Count Items In Directory    ${TARGET}
+    Should Be Equal As Integers    2    ${item_count}
+
+Test Replace Broken Link Deep Link
     ${TARGET} =    Get Target
     Set Mode    replace
     # Creating broken symlink will not create intermediate directory.
@@ -100,6 +118,17 @@ Test Replace Mode Broken Link
     Should Be Equal As Strings    0    ${result.rc}
     Deep Link    ${CURDIR}${/}file
     Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
+
+Test Replace Broken Link Shallow Link
+    ${TARGET} =    Get Target
+    Set Mode    replace
+    # Creating broken symlink will not create intermediate directory.
+    Create Directory    ${TARGET}
+    # Break one of the symlinks and check that it will be replaced on another run.
+    ${result} =    Run Process    ln    -s    foobar    ${TARGET}${/}file
+    Should Be Equal As Strings    0    ${result.rc}
+    Shallow Link    ${CURDIR}${/}dir
+    Link Should Exist    ${CURDIR}${/}dir    ${TARGET}${/}dir
 
 Test Backup Mode Deep Link
     ${TARGET} =    Get Target

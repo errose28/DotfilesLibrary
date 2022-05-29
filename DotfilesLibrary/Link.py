@@ -154,7 +154,6 @@ class Link:
     def _link(self, src: Path, dst: Path) -> bool:
         """
         Creates a symlink with name dst that points to src.
-        Symlink is only created if src is not ignored.
         If dst exists, symlink is only created if mode is not skip.
         If dst exists and mode is backup, a backup copy of dst will be created before replacing it with the link.
         """
@@ -168,9 +167,14 @@ class Link:
             else:
                 if self._mode == self.Mode.BACKUP:
                     self._backup(dst)
+                elif self._mode != self.Mode.REPLACE:
+                    raise ValueError(f'Unrecognized mode configured: {str(self._mode)}')
 
-                # In replace or backup mode, remove conflicting file.
-                os.remove(dst)
+                # In replace or backup mode, remove conflicting file or directory recursively.
+                if dst.is_dir():
+                    shutil.rmtree(dst)
+                else:
+                    os.remove(dst)
 
         if should_link:
             # Make intermediate directories for symlink.
