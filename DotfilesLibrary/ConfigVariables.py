@@ -11,13 +11,17 @@ class ConfigVariable:
     @property
     def value(self) -> Union[str, List[str]]:
         value =  BuiltIn().get_variable_value('${' + self._name + '}', self._default)
-        if type(value) is str and self._sep:
+        if isinstance(value, str) and self._sep:
             value = value.split(self._sep)
         return value
 
     @property
     def name(self) -> str:
         return self._name
+
+    @property
+    def default(self) -> str:
+        return self._default
 
 # Configurations that can be set by the user.
 

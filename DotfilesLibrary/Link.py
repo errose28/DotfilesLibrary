@@ -53,9 +53,10 @@ class Link:
         logger.debug(f'cwd set to {path}')
 
     @keyword
-    def set_target(self, path: str) -> None:
+    def set_target(self, path: str=None) -> None:
+        # Passing an empty string or none should reset to the default value.
         if not path:
-            path = ConfigVariables.TARGET.value
+            path = ConfigVariables.TARGET.default
 
         self._target = Path(path).expanduser().resolve()
         logger.debug(f'target set to {self._target}')
@@ -83,10 +84,10 @@ class Link:
         logger.debug(f'ignore set to {self._ignore}')
 
     @keyword
-    def set_mode(self, mode: str) -> None:
+    def set_mode(self, mode: str=None) -> None:
         # Sets mode based a string value using any case.
         if not mode:
-            mode = ConfigVariables.MODE.value
+            mode = ConfigVariables.MODE.default
 
         self._mode = self.Mode[mode.upper()]
         logger.debug(f'mode set to {mode}')
