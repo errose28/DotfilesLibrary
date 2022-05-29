@@ -21,3 +21,7 @@ Link Should Exist
     Command Should Succeed    ${result}
     Should Be Equal    ${result.stdout}    ${dest}
 
+Get Target
+    # Generates a target directory for the current test.
+    # This allows results to be examined after the test without colliding with other tests.
+    [return]    ${TARGET BASE}${/}${TEST NAME}

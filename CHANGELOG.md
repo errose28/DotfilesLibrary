@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 
 - `Interactive` keyword argument `fail_on_rc` now defaults to `True`.
 
+### Fixed
+
+- Fix bugs involving `Add Ignore` and `Set Ignore`.
+
 ## [0.1.0] - 2021-01-22
 
 ### Added
@@ -30,7 +34,7 @@ All notable changes to this project will be documented in this file.
 
 - `Interactive` keyword to run shell commands in the foreground.
 
-- No-op `Emit` keyword that can be used with listeners for plugable operations.
+- No-op `Emit` keyword that can be used with listeners for pluggable operations.
 
 
 [Unreleased]: https://github.com/errose28/DotfilesLibrary/compare/v0.1.0...HEAD

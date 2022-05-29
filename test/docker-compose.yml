@@ -1,7 +1,7 @@
 version: "3"
 services:
   test_service:
-    image: robot-archlinux
+    image: dotfiles-library-test
     volumes:
       # Code to test:
       - ../DotfilesLibrary:/test/src/DotfilesLibrary:ro

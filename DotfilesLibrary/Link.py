@@ -66,19 +66,18 @@ class Link:
             # Clear previous ignore value so it is not processed in _get_paths.
             old_ignore = self._ignore
             self._ignore = []
-            self._ignore = old_ignore + self._get_paths(*paths)
+            self._ignore = old_ignore + self._expand_paths(*paths)
 
         logger.debug(f'ignore set to {self._ignore}')
 
     @keyword
     def set_ignore(self, *paths: str) -> None:
-        # Clear previous ignore value so it is not processed in _get_paths.
-        # Note that this will remove the robot file from the ignore list.
         self._ignore = []
-
         # Only add paths if the argument is not None or empty, and the first element is not None.
         if paths and paths[0]:
-            self._ignore = self._get_paths(*paths)
+            self._ignore = self._expand_paths(*paths)
+        # Re-add the current robot file to the ignore list after reseting the list.
+        self.add_ignore(self._robot_file)
 
         logger.debug(f'ignore set to {self._ignore}')
 
@@ -97,8 +96,9 @@ class Link:
     def shallow_link(self, *paths: str) -> None:
         """
         For each path in paths, creates a symlink immediately under the target with the same name as the file or
-        directory the path specifies. Files are linked using absolute paths. Raises ValueError if paths are not
-        subdirectories of the current working directory.
+        directory the path specifies. Files are linked using absolute paths. Ignore entries for paths inside a directory
+        being shallow linked are diregarded. Raises ValueError if paths are not subdirectories of the current working
+        directory.
 
         Example:
         target = '/target'
@@ -106,9 +106,10 @@ class Link:
         Resulting link: /target/bar -> /foo/bar
         """
 
-        for path in self._get_paths(*paths):
-            target_path = self._get_target(path)
-            self._link(path, target_path)
+        for path in self._expand_paths(*paths):
+            if not self._is_ignored(path):
+                target_path = self._get_target(path)
+                self._link(path, target_path)
 
     @keyword
     def deep_link(self, *paths: str) -> None:
@@ -122,16 +123,20 @@ class Link:
         shallow_link('/foo/bar')
         Resulting link: /target/foo/bar -> /foo/bar
         """
-        for path in self._get_paths(*paths):
+        for path in self._expand_paths(*paths):
             if path.is_file():
-                target_path = self._get_target(path)
-                self._link(path, target_path)
+                if not self._is_ignored(path):
+                    target_path = self._get_target(path)
+                    self._link(path, target_path)
             else:
                 for root, _, files in os.walk(str(path)):
                     for file in files:
                         src_file = Path(root, file)
-                        target_file = self._get_target(src_file)
-                        self._link(src_file, target_file)
+                        # Ignore list must be checked for each file. If we pass in the parent directory only, we may
+                        # miss a child file that is being explicitly ignored.
+                        if not self._is_ignored(src_file):
+                            target_file = self._get_target(src_file)
+                            self._link(src_file, target_file)
 
     ### Hidden Helper Methods ###
 
@@ -182,8 +187,15 @@ class Link:
 
     def _is_ignored(self, path: Path) -> bool:
         """
-        Determines if the given path is contained in the ignore list, either literally or within a subdirectory.
-        Globbing in the ignore list is currently not supported.
+        Determines if the given path matches a path in the ignore list.
+        Path globs should be expanded before calling this method.
+
+        if path is a file:
+            This method returns true if path is a subdirectory of an ignored directory, or an exact match to an ignored
+            file.
+        if path is a directory:
+            This method returns true if path is a subdirectory of an ignored directory, or an exact match to an ignored
+            directory. It does not check file ignores.
         """
         is_ignored = False
 
@@ -200,11 +212,12 @@ class Link:
                     is_ignored = False
 
             if is_ignored:
+                logger.debug(f'Ignoring {path} because it matches ignored path {ignore_path}')
                 break
 
         return is_ignored
 
-    def _get_paths(self, *paths: Tuple[str]) -> List[Path]:
+    def _expand_paths(self, *paths: Tuple[str]) -> List[Path]:
         """
         Converts paths to a list of pathlib.Path objects.
         Absolute paths are treated literally, relative paths are resolved to the current working directory,
@@ -219,14 +232,7 @@ class Link:
             path = Path(path_str).expanduser().resolve()
             # Cannot glob absolute paths, so make them relative to root, glob, then resolve back to the root.
             unglobbed_paths = Path(path.anchor).glob(str(path.relative_to(path.anchor)))
-
-            logger.debug(f'Path string {path_str} resolved to {unglobbed_paths}')
-
-            for try_path in unglobbed_paths:
-                if self._is_ignored(try_path):
-                    logger.debug(f'Ignoring {try_path} when resolving path {path_str}')
-                else:
-                    path_list.append(try_path)
+            path_list += unglobbed_paths
 
         return path_list
 

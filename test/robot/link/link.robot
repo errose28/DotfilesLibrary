@@ -10,11 +10,6 @@ Setup
     Log    Target is ${target}    console=True
     Set Target    ${target}
 
-Get Target
-    # Generates a target directory for the current test.
-    # This allows results to be examined after the test without colliding with other tests.
-    [return]    ${TARGET BASE}${/}${TEST NAME}
-
 *** Test Cases ***
 Test Deep Link *
     ${TARGET} =    Get Target
@@ -60,7 +55,7 @@ Test Skip Mode Deep Link
     ${TARGET} =    Get Target
     Set Mode    skip
 
-    # Create A top level file and a top level directory with a file in the target.
+    # Create a top level file and a top level directory with a file in the target.
     Create File    ${TARGET}${/}file    content=file_content
     Create File    ${TARGET}${/}dir${/}dir_file    content=dir_file_content
 
