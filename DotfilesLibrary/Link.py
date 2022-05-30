@@ -174,7 +174,7 @@ class Link:
                     raise ValueError(f'Unrecognized mode configured: {str(self._mode)}')
 
                 # In replace or backup mode, remove conflicting file or directory recursively.
-                if dst.is_dir():
+                if dst.is_dir() and not dst.is_symlink():
                     shutil.rmtree(dst)
                 else:
                     os.remove(dst)

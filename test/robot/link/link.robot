@@ -125,10 +125,55 @@ Test Replace Broken Link Shallow Link
     # Creating broken symlink will not create intermediate directory.
     Create Directory    ${TARGET}
     # Break one of the symlinks and check that it will be replaced on another run.
-    ${result} =    Run Process    ln    -s    foobar    ${TARGET}${/}file
+    ${result} =    Run Process    ln    -s    foobar    ${TARGET}${/}dir
     Should Be Equal As Strings    0    ${result.rc}
-    Shallow Link    ${CURDIR}${/}dir
+    Shallow Link    dir
     Link Should Exist    ${CURDIR}${/}dir    ${TARGET}${/}dir
+
+Test Replace Existing Link Deep Link
+    ${TARGET} =    Get Target
+    Set Mode    replace
+
+    # Original targets for the symlinks.
+    Create File    ${TARGET}${/}target${/}file
+    Create Directory    ${TARGET}${/}target${/}dir
+    Create File    ${TARGET}${/}target${/}dir${/}dir_file
+
+    ${result} =    Run Process    ln    -s    ${TARGET}${/}target${/}file    ${TARGET}${/}file
+    Should Be Equal As Strings    0    ${result.rc}
+    ${result} =    Run Process    ln    -s    ${TARGET}${/}target${/}dir    ${TARGET}${/}dir
+    Should Be Equal As Strings    0    ${result.rc}
+
+    Deep Link    file    dir
+    Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
+    Link Should Exist    ${CURDIR}${/}dir${/}dir_file    ${TARGET}${/}dir${/}dir_file
+    # Original links should have been replaced, but their targets should still be present.
+    File Should Exist    ${TARGET}${/}target${/}file
+    Directory Should Exist    ${TARGET}${/}target${/}dir
+    File Should Exist    ${TARGET}${/}target${/}dir${/}dir_file
+
+Test Replace Existing Link Shallow Link
+    ${TARGET} =    Get Target
+    Set Mode    replace
+
+    # Original targets for the symlinks.
+    Create File    ${TARGET}${/}target${/}file
+    Create Directory    ${TARGET}${/}target${/}dir
+    Create File    ${TARGET}${/}target${/}dir${/}dir_file
+
+    ${result} =    Run Process    ln    -s    ${TARGET}${/}target${/}file    ${TARGET}${/}file
+    Should Be Equal As Strings    0    ${result.rc}
+    ${result} =    Run Process    ln    -s    ${TARGET}${/}target${/}dir    ${TARGET}${/}dir
+    Should Be Equal As Strings    0    ${result.rc}
+
+    Shallow Link    file    dir
+    Link Should Exist    ${CURDIR}${/}file    ${TARGET}${/}file
+    Link Should Exist    ${CURDIR}${/}dir    ${TARGET}${/}dir
+    File Should Exist    ${TARGET}${/}dir${/}dir_file
+    # Original links should have been replaced, but their targets should still be present.
+    File Should Exist    ${TARGET}${/}target${/}file
+    Directory Should Exist    ${TARGET}${/}target${/}dir
+    File Should Exist    ${TARGET}${/}target${/}dir${/}dir_file
 
 Test Backup Mode Deep Link
     ${TARGET} =    Get Target
