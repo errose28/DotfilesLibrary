@@ -10,7 +10,14 @@ class ConfigVariable:
 
     @property
     def value(self) -> Union[str, List[str]]:
-        value =  BuiltIn().get_variable_value('${' + self._name + '}', self._default)
+        """
+        Returns the value of the variable if it is set. Otherwise, returns the default value. If the value is not set
+        and there is no default value, returns None.
+        """
+        value = BuiltIn().get_variable_value('${' + self._name + '}', self._default)
+        # If the variable was set but reset to empty or None, robot will not use the default value in the above call.
+        if not value:
+            value = self._default
         if isinstance(value, str) and self._sep:
             value = value.split(self._sep)
         return value
@@ -18,10 +25,6 @@ class ConfigVariable:
     @property
     def name(self) -> str:
         return self._name
-
-    @property
-    def default(self) -> str:
-        return self._default
 
 # Configurations that can be set by the user.
 
